@@ -1,0 +1,57 @@
+---
+/**
+ * Visuel de projet : l'image optimisée (AVIF, WebP, plusieurs largeurs, dimensions déclarées,
+ * chargement différé hors premier écran) ou, tant qu'elle manque, un aplat neutre légendé.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  image?: ImageMetadata | null;
+  alt?: string | null;
+  /** Proportions imposées, ex. "3 / 2". Sans valeur : celles de l'image (ou celles fixées par le CSS). */
+  ratio?: string;
+  /** Texte de l'aplat quand l'image manque. */
+  legende?: string;
+  sizes?: string;
+  /** Premier écran : chargement immédiat et prioritaire. */
+  prioritaire?: boolean;
+  /** L'image remplit le cadre (recadrage centré). */
+  recadrer?: boolean;
+}
+
+const {
+  image,
+  alt,
+  ratio,
+  legende = 'Visuel à venir',
+  sizes = '100vw',
+  prioritaire = false,
+  recadrer = true,
+} = Astro.props;
+
+const largeurs = image ? [480, 720, 960, 1280, 1600, 2000, 2400].filter((l) => l < image.width) : [];
+if (image) largeurs.push(Math.min(image.width, 2400));
+const style = ratio ? `aspect-ratio: ${ratio}` : undefined;
+---
+
+{
+  image ? (
+    <Picture
+      src={image}
+      alt={alt ?? ''}
+      formats={['avif', 'webp']}
+      widths={largeurs}
+      sizes={sizes}
+      loading={prioritaire ? 'eager' : 'lazy'}
+      fetchpriority={prioritaire ? 'high' : 'auto'}
+      decoding="async"
+      class:list={['visuel', { 'visuel--recadre': recadrer }]}
+      style={style}
+    />
+  ) : (
+    <div class="visuel aplat" style={style} aria-hidden="true">
+      <span class="aplat__legende">{legende}</span>
+    </div>
+  )
+}

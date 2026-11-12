@@ -1,0 +1,118 @@
+---
+import Estampille from './Estampille.astro';
+import ACompleter from './ACompleter.astro';
+import { studio } from '../config';
+import { url } from '../lib/url';
+---
+
+<footer class="pied">
+  <div class="pied__lisere vichy" aria-hidden="true"></div>
+  <div class="conteneur pied__grille">
+    <div class="pied__signature">
+      <p class="pied__nom">Studio Joséphine</p>
+      <p class="legende">Clara Audureau<br />Graphiste et webdesigner indépendante<br />Branding, webdesign, print</p>
+    </div>
+
+    <div class="pied__bloc pied__contact">
+      <h2 class="pied__titre">Me joindre</h2>
+      <ul>
+        <li>
+          {studio.email ? <a href={`mailto:${studio.email}`}>{studio.email}</a> : <ACompleter quoi="adresse email" />}
+        </li>
+        <li>
+          {studio.linkedin ? <a href={studio.linkedin}>LinkedIn</a> : <ACompleter quoi="lien LinkedIn" />}
+        </li>
+        <li><a href={url('/contact/')}>Formulaire de contact</a></li>
+      </ul>
+    </div>
+
+    <nav class="pied__bloc pied__plan" aria-label="Plan du site">
+      <h2 class="pied__titre">Le site</h2>
+      <ul>
+        <li><a href={url('/projets/')}>Projets</a></li>
+        <li><a href={url('/services/')}>Services</a></li>
+        <li><a href={url('/#a-propos')}>À propos</a></li>
+        <li><a href={url('/mentions-legales/')}>Mentions légales</a></li>
+        <li><a href={url('/confidentialite/')}>Confidentialité</a></li>
+      </ul>
+    </nav>
+
+    <div class="pied__estampille">
+      <Estampille angle={-7} taille="clamp(6.5rem, 5.5rem + 3vw, 8.5rem)" accent="rose" graine={12} texte="Studio Joséphine · branding · webdesign · print · " />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .pied {
+    margin-top: var(--space-3xl);
+  }
+
+  .pied__lisere {
+    height: 0.6rem;
+    border-block: 1px solid var(--c-filet);
+  }
+
+  .pied__grille {
+    display: grid;
+    gap: var(--space-l) var(--gouttiere);
+    padding-block: var(--space-xl) var(--space-l);
+  }
+
+  .pied__nom {
+    font-family: var(--font-titres);
+    font-size: var(--step-2);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: var(--space-2xs);
+  }
+
+  .pied__titre {
+    margin-bottom: var(--space-2xs);
+    font-family: var(--font-texte);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .pied__bloc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pied__bloc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cible-min);
+  }
+
+  .pied__estampille {
+    justify-self: start;
+  }
+
+  @media (min-width: 48em) {
+    .pied__grille {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .pied__signature {
+      grid-column: 1 / 5;
+    }
+
+    .pied__contact {
+      grid-column: 5 / 8;
+    }
+
+    .pied__plan {
+      grid-column: 8 / 11;
+    }
+
+    .pied__estampille {
+      grid-column: 11 / 13;
+      justify-self: end;
+    }
+  }
+</style>

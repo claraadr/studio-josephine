@@ -1,0 +1,89 @@
+---
+/**
+ * Un groupe d'images d'étude de cas : pleine largeur, paire, triptyque ou détail.
+ * Une image manquante est remplacée par un aplat neutre aux bonnes proportions.
+ */
+import Visuel from './Visuel.astro';
+import { typo } from '../lib/typographie.mjs';
+import type { ImageMetadata } from 'astro';
+
+interface Element {
+  image?: ImageMetadata | null;
+  alt?: string | null;
+  legende?: string | null;
+}
+
+interface Props {
+  format: 'pleine' | 'paire' | 'triptyque' | 'detail';
+  images: Element[];
+}
+
+const { format, images } = Astro.props;
+const ratios = { pleine: '16 / 9', paire: '4 / 5', triptyque: '3 / 4', detail: '1 / 1' };
+const tailles = {
+  pleine: '(min-width: 92rem) 84rem, 92vw',
+  paire: '(min-width: 48em) 44vw, 92vw',
+  triptyque: '(min-width: 48em) 29vw, 92vw',
+  detail: '(min-width: 48em) 34vw, 80vw',
+};
+// Paires et triptyques partagent un format pour s'aligner ; les autres gardent le leur.
+const recadrer = format === 'paire' || format === 'triptyque';
+---
+
+<div class={`galerie galerie--${format}`}>
+  {
+    images.map((el) => (
+      <figure class="galerie__element">
+        <Visuel
+          image={el.image}
+          alt={el.alt}
+          ratio={el.image && !recadrer ? undefined : ratios[format]}
+          recadrer={recadrer}
+          sizes={tailles[format]}
+          legende={el.legende ? `${typo(el.legende)} · visuel à venir` : 'Visuel à venir'}
+        />
+        {el.image && el.legende && <figcaption class="legende">{typo(el.legende)}</figcaption>}
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .galerie {
+    display: grid;
+    gap: var(--gouttiere);
+  }
+
+  .galerie__element {
+    display: grid;
+    gap: var(--space-2xs);
+    align-content: start;
+  }
+
+  .galerie__element :global(.visuel) {
+    width: 100%;
+  }
+
+  @media (min-width: 48em) {
+    .galerie--paire {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .galerie--triptyque {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* Le détail : une image plus petite, décalée sur la grille */
+    .galerie--detail {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .galerie--detail .galerie__element {
+      grid-column: 7 / 12;
+    }
+
+    .galerie--detail .galerie__element:nth-child(2n) {
+      grid-column: 2 / 7;
+    }
+  }
+</style>
