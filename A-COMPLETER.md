@@ -21,7 +21,8 @@ Ce qui manque pour avancer, et où chaque élément sera utilisé. Mis à jour �
 
 ## À décider par Lucas
 
-- [ ] Nom de domaine (à reporter dans `astro.config.mjs`).
+- [ ] Nom de domaine : à déclarer dans Settings → Pages → Custom domain, puis DNS chez le registraire.
+      En attendant, le site est en ligne sur https://claraadr.github.io/studio-josephine/.
 - [ ] Service de formulaire (son adresse sera une variable de configuration).
 
 ## Écarts à signaler
