@@ -1,0 +1,834 @@
+---
+import Base from '../../layouts/Base.astro';
+import Logo from '../../components/Logo.astro';
+import Cartouche from '../../components/Cartouche.astro';
+import Bandeau from '../../components/Bandeau.astro';
+import Estampille from '../../components/Estampille.astro';
+
+const couleurs = [
+  { nom: 'Lin', jeton: '--c-lin', hex: '#F3EEE6', role: 'Fond de page' },
+  { nom: 'Bordeaux', jeton: '--c-bordeaux', hex: '#590D23', role: 'Texte, titres, filets, bouton principal' },
+  { nom: 'Rose', jeton: '--c-rose', hex: '#EFC7DB', role: 'Accent : cartouches Branding, détails' },
+  { nom: 'Anis', jeton: '--c-anis', hex: '#CFC56E', role: 'Accent : cartouches Webdesign, détails' },
+  { nom: 'Corail', jeton: '--c-corail', hex: '#DE6D52', role: 'Touches de décor uniquement' },
+];
+
+const contrastes = [
+  ['Bordeaux', 'Lin', '12,1 : 1', 'Tout texte'],
+  ['Bordeaux', 'Blanc', '13,9 : 1', 'Tout texte'],
+  ['Bordeaux', 'Rose', '9,2 : 1', 'Tout texte'],
+  ['Bordeaux', 'Anis', '7,9 : 1', 'Tout texte'],
+  ['Bordeaux 72 %', 'Lin', '5,8 : 1', 'Texte secondaire (légendes, métadonnées)'],
+  ['Bordeaux', 'Corail', '4,3 : 1', 'Grand texte seulement (24 px, ou 19 px gras)'],
+  ['Lin', 'Bordeaux', '12,1 : 1', 'Texte clair sur bouton bordeaux'],
+  ['Corail', 'Lin', '2,8 : 1', 'Décor seulement'],
+  ['Anis', 'Lin', '1,5 : 1', 'Décor seulement'],
+  ['Rose', 'Lin', '1,3 : 1', 'Décor seulement'],
+];
+
+const echelle = [
+  { jeton: '--step-6', usage: 'Affiche', taille: 'var(--step-6)', graisse: 200 },
+  { jeton: '--step-5', usage: 'Titre de page (h1)', taille: 'var(--step-5)', graisse: 250 },
+  { jeton: '--step-3', usage: 'Titre de section (h2)', taille: 'var(--step-3)', graisse: 300 },
+  { jeton: '--step-1', usage: 'Sous-titre (h3)', taille: 'var(--step-1)', graisse: 500 },
+];
+
+const graisses = [160, 250, 400, 550, 700];
+
+const mots = [
+  'identité de marque',
+  'direction artistique',
+  'webdesign',
+  'UX/UI',
+  'print',
+  'packaging',
+  'charte graphique',
+  'univers visuel',
+];
+---
+
+<Base
+  titre="Guide de styles — Studio Joséphine"
+  description="Fondations graphiques du site de Studio Joséphine : couleurs, typographies, éléments signature."
+  indexer={false}
+>
+  <div class="conteneur">
+    <!-- Ouverture -->
+    <section class="ouverture grille" aria-labelledby="titre-guide">
+      <p class="surtitre ouverture__surtitre">Étape 1 · Fondations</p>
+      <h1 id="titre-guide" class="ouverture__titre">Guide de styles</h1>
+      <p class="chapeau ouverture__chapeau">
+        Les briques du site, réunies sur une seule page avant toute mise en page&nbsp;: couleurs, typographies,
+        cartouches, bandeau, estampilles et textures.
+      </p>
+      <p class="legende ouverture__note">
+        Page de travail non référencée. Les éléments signalés «&nbsp;substitut&nbsp;» attendent les fichiers de
+        Clara.
+      </p>
+      <div class="ouverture__estampille">
+        <Estampille angle={-11} taille="clamp(7rem, 5rem + 8vw, 11rem)" />
+      </div>
+    </section>
+
+    <!-- 01 Couleurs -->
+    <section class="partie grille" aria-labelledby="couleurs">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">01</span>
+        <h2 id="couleurs">Couleurs</h2>
+      </header>
+      <div class="partie__corps">
+        <p class="mesure">
+          Le texte est toujours bordeaux. Le rose, l’anis et le corail vivent par touches&nbsp;: cartouches,
+          soulignés, estampilles. Aucun fond de section en aplat d’accent.
+        </p>
+        <ul class="nuancier" role="list">
+          {
+            couleurs.map((c) => (
+              <li class="nuance">
+                <span class="nuance__pastille" style={`background: var(${c.jeton})`} />
+                <span class="nuance__nom">{c.nom}</span>
+                <span class="legende">
+                  <code>{c.hex}</code>
+                  <br />
+                  {c.role}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="tableau-defile" tabindex="0" role="region" aria-labelledby="legende-contrastes">
+          <table class="tableau">
+            <caption id="legende-contrastes" class="legende">
+              Rapports de contraste. Seuils WCAG AA&nbsp;: 4,5&nbsp;:&nbsp;1 pour le texte, 3&nbsp;:&nbsp;1 pour le grand texte et
+              l’interface.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Texte ou motif</th>
+                <th scope="col">Fond</th>
+                <th scope="col">Rapport</th>
+                <th scope="col">Usage autorisé</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                contrastes.map(([texte, fond, rapport, usage]) => (
+                  <tr>
+                    <td>{texte}</td>
+                    <td>{fond}</td>
+                    <td class="chiffre">{rapport}</td>
+                    <td>{usage}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 Typographies -->
+    <section class="partie grille" aria-labelledby="typographies">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">02</span>
+        <h2 id="typographies">Typographies</h2>
+      </header>
+      <div class="partie__corps">
+        <div class="specimen">
+          <p class="specimen__glyphe" aria-hidden="true">Aa</p>
+          <div>
+            <h3>Readex Pro — titres</h3>
+            <p class="legende">
+              Police variable, graisses 160 à 700, axe HEXP fixé à 0. Hébergée dans le site en WOFF2, réduite aux
+              caractères latins (31&nbsp;Ko).
+            </p>
+            <ul class="graisses" role="list">
+              {
+                graisses.map((g) => (
+                  <li style={`font-weight: ${g}`}>
+                    <span class="legende">{g}</span> Esthétique, simplicité
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+
+        <ul class="echelle" role="list">
+          {
+            echelle.map((e) => (
+              <li>
+                <span class="legende echelle__jeton">
+                  {e.usage}
+                  <br />
+                  <code>{e.jeton}</code> · {e.graisse}
+                </span>
+                <span class="echelle__exemple" style={`font-size: ${e.taille}; font-weight: ${e.graisse}`}>
+                  Des marques qui ont du sens
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="poppins">
+          <div class="poppins__texte">
+            <h3>Poppins — texte courant</h3>
+            <p>
+              Moi, c’est Clara. Je conçois des expériences graphiques où esthétique, simplicité et fonctionnalité se
+              rencontrent. J’accorde une attention particulière aux projets qui portent des valeurs sociales,
+              environnementales ou humaines, en y apportant une approche créative, sensible et cohérente.
+            </p>
+            <p>
+              Ce qui m’anime&nbsp;? «&nbsp;Découvrir de nouveaux univers, comprendre les problématiques propres à chaque
+              secteur et imaginer des solutions graphiques qui ont du sens.&nbsp;»
+            </p>
+          </div>
+          <dl class="reglages">
+            <div><dt>Taille</dt><dd>16 → 17,6&nbsp;px, fluide</dd></div>
+            <div><dt>Graisses</dt><dd>400 texte, 500 libellés, 600 accents</dd></div>
+            <div><dt>Interlignage</dt><dd>1,72</dd></div>
+            <div><dt>Longueur de ligne</dt><dd>64 caractères au plus</dd></div>
+            <div><dt>Approche</dt><dd>normale, crénage actif</dd></div>
+            <div><dt>Ponctuation</dt><dd>espace insécable U+00A0 avant ; : ! ? et dans « »</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 Logo -->
+    <section class="partie grille" aria-labelledby="logo">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">03</span>
+        <h2 id="logo">Logo</h2>
+      </header>
+      <div class="partie__corps logo-demo">
+        <figure>
+          <Logo largeur="clamp(12rem, 9rem + 12vw, 22rem)" />
+          <figcaption class="legende">
+            <Cartouche>Substitut</Cartouche> Place réservée au logotype de Clara (SVG, 4&nbsp;:&nbsp;1), qui héritera du bordeaux du texte.
+          </figcaption>
+        </figure>
+        <ul class="regles legende" role="list">
+          <li>150&nbsp;px de large au minimum&nbsp;; en dessous, la version réduite («&nbsp;j&nbsp;» et son point, à valider).</li>
+          <li>Jamais déformé, jamais sur du vichy, toujours avec de l’air autour.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 04 Cartouches -->
+    <section class="partie grille" aria-labelledby="cartouches">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">04</span>
+        <h2 id="cartouches">Cartouches</h2>
+      </header>
+      <div class="partie__corps">
+        <p class="mesure">
+          Une couleur par famille (proposition, Clara tranche). Le corail ne porte pas de texte&nbsp;: le cartouche
+          Print garde un fond lin, un filet et une pastille. Les autres disciplines restent neutres.
+        </p>
+        <ul class="cartouches cartouches--demo" role="list">
+          <li><Cartouche famille="branding">Branding</Cartouche></li>
+          <li><Cartouche famille="webdesign">Webdesign</Cartouche></li>
+          <li><Cartouche famille="print">Print</Cartouche></li>
+          <li><Cartouche>Gestion de projet</Cartouche></li>
+          <li><Cartouche>Photographie</Cartouche></li>
+        </ul>
+
+        <article class="exemple-projet" aria-labelledby="exemple-berlot">
+          <div class="aplat" role="img" aria-label="Emplacement du visuel de couverture d’Atelier Berlot, à fournir">
+            <span class="legende">Visuel à fournir · Atelier Berlot · 3&nbsp;:&nbsp;2</span>
+          </div>
+          <div class="exemple-projet__texte">
+            <h3 id="exemple-berlot">Atelier Berlot</h3>
+            <p>Donner une présence web à une biscuiterie artisanale</p>
+            <ul class="cartouches" role="list">
+              <li><Cartouche famille="webdesign">Webdesign</Cartouche></li>
+              <li><Cartouche>Gestion de projet</Cartouche></li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- 05 Bandeau : pleine largeur -->
+  <section class="partie partie--pleine" aria-labelledby="bandeau">
+    <div class="conteneur grille">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">05</span>
+        <h2 id="bandeau">Bandeau</h2>
+      </header>
+      <p class="partie__corps mesure">
+        Entre deux sections. Bouton pause à gauche, arrêt automatique si le visiteur a demandé moins d’animations.
+      </p>
+    </div>
+    <Bandeau mots={mots} />
+  </section>
+
+  <div class="conteneur">
+    <!-- 06 Estampilles -->
+    <section class="partie grille" aria-labelledby="estampilles">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">06</span>
+        <h2 id="estampilles">Estampilles</h2>
+      </header>
+      <div class="partie__corps">
+        <p class="mesure">
+          Deux ou trois sur tout le site. Posées de travers, encre légèrement usée, contour un peu irrégulier comme
+          le logo.
+        </p>
+        <div class="planche-estampilles">
+          <figure>
+            <Estampille angle={-9} taille="10rem" graine={3} />
+            <figcaption class="legende">Ronde, encre bordeaux</figcaption>
+          </figure>
+          <figure>
+            <Estampille forme="ovale" angle={6} accent="corail" graine={8} texte="Studio Joséphine" texteBas="graphisme print & web" />
+            <figcaption class="legende">Ovale, fond corail</figcaption>
+          </figure>
+          <figure>
+            <Estampille angle={-4} taille="8rem" accent="rose" graine={12} texte="Studio Joséphine · branding · webdesign · print · " />
+            <figcaption class="legende">Ronde, fond rose (pied de page)</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 Textures -->
+    <section class="partie grille" aria-labelledby="textures">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">07</span>
+        <h2 id="textures">Lin et vichy</h2>
+      </header>
+      <div class="partie__corps">
+        <p class="mesure">
+          En détails seulement&nbsp;: un liseré, un coin de section, le dos d’une étiquette. Jamais en fond de page,
+          jamais sous un texte courant.
+        </p>
+        <div class="planche-textures">
+          <figure>
+            <div class="echantillon lin" aria-hidden="true"></div>
+            <figcaption class="legende">Lin, grain de fibres très léger</figcaption>
+          </figure>
+          <figure>
+            <div class="echantillon vichy" aria-hidden="true"></div>
+            <figcaption class="legende">Vichy rose, carreau de 10&nbsp;px</figcaption>
+          </figure>
+          <figure>
+            <div class="echantillon vichy vichy--anis" aria-hidden="true"></div>
+            <figcaption class="legende">Vichy anis</figcaption>
+          </figure>
+          <figure>
+            <div class="echantillon echantillon--coin" aria-hidden="true">
+              <span class="coin-vichy vichy"></span>
+            </div>
+            <figcaption class="legende">Coin de section</figcaption>
+          </figure>
+        </div>
+        <div class="lisere-vichy vichy" aria-hidden="true"></div>
+        <p class="legende">Liseré de séparation.</p>
+      </div>
+    </section>
+
+    <!-- 08 Interactions -->
+    <section class="partie grille" aria-labelledby="interactions">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">08</span>
+        <h2 id="interactions">Liens, boutons, champs</h2>
+      </header>
+      <div class="partie__corps interactions">
+        <div class="interactions__ligne">
+          <a class="bouton" href="#interactions">Parlons de votre projet</a>
+          <a class="bouton bouton--secondaire" href="#interactions">Voir les projets</a>
+        </div>
+        <p class="mesure">
+          Un <a href="#interactions">lien dans le texte</a>, bordeaux et souligné. Pour aller plus loin&nbsp;:
+          <a class="lien-fleche" href="#interactions">Tous les projets <svg class="fleche" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M1 6.3c5.6-.4 11.4-.5 17-.2M13.2 1.4c1.7 1.7 3.4 3.2 5 4.7-1.7 1.4-3.4 3-5 4.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </p>
+        <form class="formulaire-demo" action="#" onsubmit="return false" novalidate>
+          <div class="champ">
+            <label for="demo-nom">Nom</label>
+            <input id="demo-nom" name="nom" type="text" autocomplete="name" />
+          </div>
+          <div class="champ">
+            <label for="demo-email">Email</label>
+            <input
+              id="demo-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              aria-invalid="true"
+              aria-describedby="demo-email-erreur"
+              value="clara@"
+            />
+            <p class="erreur" id="demo-email-erreur">
+              <strong>Erreur&nbsp;:</strong> l’adresse email semble incomplète. Exemple&nbsp;: nom@domaine.fr
+            </p>
+          </div>
+          <div class="champ">
+            <label for="demo-objet">Objet de la demande</label>
+            <select id="demo-objet" name="objet">
+              <option>Une identité de marque</option>
+              <option>Un site web</option>
+              <option>Un support imprimé</option>
+              <option>Un recrutement ou une collaboration</option>
+              <option>Autre chose</option>
+            </select>
+          </div>
+          <p class="legende">Formulaire d’exemple&nbsp;: rien n’est envoyé.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- 09 Espacements -->
+    <section class="partie grille" aria-labelledby="espacements">
+      <header class="partie__marge">
+        <span class="partie__numero" aria-hidden="true">09</span>
+        <h2 id="espacements">Espacements et grille</h2>
+      </header>
+      <div class="partie__corps">
+        <p class="mesure">
+          Douze colonnes, une marge de 20 à 80&nbsp;px selon l’écran. Les numéros et les titres de section tiennent la
+          marge de gauche, le contenu part décalé&nbsp;: c’est la grille de toutes les pages.
+        </p>
+        <ul class="espaces" role="list">
+          {
+            ['3xs', '2xs', 'xs', 's', 'm', 'l', 'xl', '2xl', '3xl'].map((t) => (
+              <li>
+                <span class="espaces__barre" style={`width: var(--space-${t})`} />
+                <code class="legende">--space-{t}</code>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <footer class="pied conteneur">
+    <hr class="filet" />
+    <p class="legende">Studio Joséphine · guide de styles · étape 1, à valider par Clara</p>
+  </footer>
+</Base>
+
+<style>
+  /* Ouverture */
+  .ouverture {
+    position: relative;
+    row-gap: var(--space-m);
+    padding-block: var(--space-2xl) var(--space-3xl);
+  }
+
+  .ouverture__surtitre,
+  .ouverture__titre,
+  .ouverture__chapeau,
+  .ouverture__note {
+    grid-column: 1 / -1;
+  }
+
+  .ouverture__titre {
+    font-size: var(--step-6);
+    font-weight: 200;
+  }
+
+  .ouverture__estampille {
+    grid-column: 1 / -1;
+    justify-self: end;
+    margin-top: calc(var(--space-l) * -1);
+  }
+
+  @media (min-width: 48em) {
+    .ouverture__titre {
+      grid-column: 1 / 10;
+    }
+
+    .ouverture__chapeau {
+      grid-column: 5 / 12;
+    }
+
+    .ouverture__note {
+      grid-column: 5 / 10;
+    }
+
+    .ouverture__estampille {
+      position: absolute;
+      bottom: var(--space-2xl);
+      right: 4%;
+      margin: 0;
+    }
+  }
+
+  /* Parties : numéro et titre en marge, contenu décalé */
+  .partie {
+    row-gap: var(--space-m);
+    padding-block: var(--space-xl) var(--space-2xl);
+    border-top: var(--filet);
+  }
+
+  .partie--pleine {
+    padding-bottom: 0;
+  }
+
+  .partie--pleine .conteneur {
+    padding-bottom: var(--space-l);
+  }
+
+  .partie__marge,
+  .partie__corps {
+    grid-column: 1 / -1;
+  }
+
+  .partie__corps > * {
+    min-width: 0;
+  }
+
+  .partie__corps {
+    display: grid;
+    gap: var(--space-l);
+    align-content: start;
+  }
+
+  .partie__numero {
+    display: block;
+    margin-bottom: var(--space-3xs);
+    font-family: var(--font-titres);
+    font-size: var(--step--1);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--c-texte-secondaire);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 64em) {
+    .partie__marge {
+      grid-column: 1 / 4;
+      position: sticky;
+      top: var(--space-l);
+      align-self: start;
+    }
+
+    .partie__corps {
+      grid-column: 4 / -1;
+    }
+
+    .partie--pleine .partie__corps {
+      grid-column: 4 / 11;
+    }
+  }
+
+  /* Nuancier */
+  .nuancier {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+    gap: var(--space-m) var(--gouttiere);
+    padding: 0;
+    list-style: none;
+  }
+
+  .nuance {
+    display: grid;
+    gap: var(--space-2xs);
+    align-content: start;
+  }
+
+  .nuance__pastille {
+    aspect-ratio: 5 / 4;
+    border-radius: 3px 5px 4px 6px / 5px 3px 6px 4px;
+    box-shadow: inset 0 0 0 1px var(--c-filet);
+  }
+
+  .nuance__nom {
+    font-family: var(--font-titres);
+    font-size: var(--step-1);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  /* Tableau */
+  .tableau-defile {
+    overflow-x: auto;
+  }
+
+  .tableau {
+    width: 100%;
+    min-width: 34rem;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+  }
+
+  .tableau caption {
+    text-align: left;
+    padding-bottom: var(--space-xs);
+  }
+
+  .tableau th,
+  .tableau td {
+    padding: 0.6em 1em 0.6em 0;
+    border-bottom: var(--filet);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .tableau th {
+    font-weight: 500;
+    border-bottom-color: var(--c-bordeaux);
+  }
+
+  .chiffre {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Spécimen Readex */
+  .specimen {
+    display: grid;
+    gap: var(--space-m);
+    align-items: end;
+  }
+
+  .specimen h3 {
+    margin-bottom: var(--space-2xs);
+  }
+
+  .specimen__glyphe {
+    font-family: var(--font-titres);
+    font-size: clamp(7rem, 4rem + 14vw, 15rem);
+    font-weight: 200;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+  }
+
+  .graisses {
+    margin-top: var(--space-s);
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-titres);
+    font-size: var(--step-2);
+    line-height: 1.3;
+  }
+
+  .graisses .legende {
+    display: inline-block;
+    width: 2.8rem;
+    font-family: var(--font-texte);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 48em) {
+    .specimen {
+      grid-template-columns: auto 1fr;
+      gap: var(--space-xl);
+    }
+  }
+
+  /* Échelle */
+  .echelle {
+    padding: 0;
+    list-style: none;
+  }
+
+  .echelle li {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-block: var(--space-s);
+    border-top: var(--filet);
+  }
+
+  .echelle__exemple {
+    font-family: var(--font-titres);
+    line-height: var(--leading-serre);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 48em) {
+    .echelle li {
+      grid-template-columns: 11rem 1fr;
+      align-items: baseline;
+    }
+  }
+
+  /* Poppins */
+  .poppins {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .poppins__texte {
+    display: grid;
+    gap: var(--space-s);
+    max-inline-size: var(--mesure);
+  }
+
+  .reglages {
+    display: grid;
+    gap: 0;
+    align-content: start;
+    font-size: var(--step--1);
+  }
+
+  .reglages div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: var(--space-s);
+    padding-block: 0.55em;
+    border-top: var(--filet);
+  }
+
+  .reglages dt {
+    font-weight: 500;
+  }
+
+  .reglages dd {
+    margin: 0;
+    color: var(--c-texte-secondaire);
+  }
+
+  @media (min-width: 80em) {
+    .poppins {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  /* Logo */
+  .logo-demo figure {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+    padding-block: var(--space-l);
+  }
+
+  .logo-demo figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs);
+    max-inline-size: 52ch;
+  }
+
+  .regles {
+    display: grid;
+    gap: var(--space-2xs);
+    padding-left: 1.1em;
+  }
+
+  /* Cartouches */
+  .cartouches--demo {
+    gap: var(--space-xs);
+  }
+
+  .exemple-projet {
+    display: grid;
+    gap: var(--space-s);
+    margin-top: var(--space-m);
+  }
+
+  .aplat {
+    display: flex;
+    align-items: flex-end;
+    aspect-ratio: 3 / 2;
+    padding: var(--space-s);
+    background: color-mix(in srgb, var(--c-bordeaux) 7%, var(--c-lin));
+  }
+
+  .exemple-projet__texte {
+    display: grid;
+    gap: var(--space-2xs);
+    justify-items: start;
+  }
+
+  .exemple-projet h3 {
+    font-size: var(--step-3);
+    font-weight: 300;
+  }
+
+  @media (min-width: 48em) {
+    .exemple-projet {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+      align-items: end;
+      gap: var(--gouttiere);
+    }
+  }
+
+  /* Estampilles */
+  .planche-estampilles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xl);
+  }
+
+  .planche-estampilles figure {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: center;
+  }
+
+  /* Textures */
+  .planche-textures {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--space-m) var(--gouttiere);
+  }
+
+  .planche-textures figure {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .echantillon {
+    position: relative;
+    aspect-ratio: 1;
+    box-shadow: inset 0 0 0 1px var(--c-filet);
+  }
+
+  .coin-vichy {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 42%;
+    height: 42%;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+
+  /* Interactions */
+  .interactions__ligne {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+  }
+
+  .formulaire-demo {
+    display: grid;
+    gap: var(--space-m);
+    max-inline-size: 30rem;
+  }
+
+  /* Espacements */
+  .espaces {
+    display: grid;
+    gap: var(--space-2xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .espaces li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+
+  .espaces__barre {
+    height: 0.75rem;
+    background: var(--c-rose);
+  }
+
+  .pied {
+    display: grid;
+    gap: var(--space-s);
+    padding-block: var(--space-xl);
+  }
+</style>

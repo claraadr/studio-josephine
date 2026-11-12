@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+
+interface Props {
+  titre: string;
+  description: string;
+  indexer?: boolean;
+}
+
+const { titre, description, indexer = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titre}</title>
+    <meta name="description" content={description} />
+    {!indexer && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preload" href="/fonts/readex-pro-var-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/poppins-regular-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#f3eee6" />
+  </head>
+  <body>
+    <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+    <header class="entete conteneur">
+      <Logo lien />
+    </header>
+    <main id="contenu" tabindex="-1">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-m);
+  }
+
+  main:focus {
+    outline: none;
+  }
+</style>

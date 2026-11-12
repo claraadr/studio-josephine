@@ -1,0 +1,63 @@
+---
+/*
+ * SUBSTITUT TEMPORAIRE du logo.
+ * Le logotype de Clara (SVG, une couleur) n'est pas encore dans ressources-clara/logo/.
+ * Dès qu'il arrive : coller ici son <svg> nettoyé (sans identifiants d'export),
+ * avec fill="currentColor", role="img" et aria-label="Studio Joséphine".
+ * Ce composant ne redessine pas le logo : il réserve sa place aux bonnes proportions (4 : 1).
+ */
+interface Props {
+  lien?: boolean;
+  largeur?: string;
+}
+const { lien = false, largeur = '11rem' } = Astro.props;
+const Balise = lien ? 'a' : 'span';
+---
+
+<Balise
+  class="logo"
+  href={lien ? '/' : undefined}
+  style={`--largeur-logo: ${largeur}`}
+  data-substitut="logo"
+>
+  <span class="visually-hidden">Studio Joséphine{lien ? ', accueil' : ''}</span>
+  <span class="logo__substitut" aria-hidden="true">
+    <span class="logo__haut">Studio</span>
+    <span class="logo__bas">joséphine</span>
+  </span>
+</Balise>
+
+<style>
+  .logo {
+    display: inline-block;
+    width: var(--largeur-logo);
+    min-width: 150px; /* « STUDIO » illisible en dessous */
+    aspect-ratio: 4 / 1;
+    color: currentColor;
+    text-decoration: none;
+  }
+
+  .logo__substitut {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    font-family: var(--font-titres);
+    line-height: 0.9;
+    outline: 1px dashed var(--c-filet);
+    outline-offset: 4px;
+  }
+
+  .logo__haut {
+    font-size: calc(var(--largeur-logo) * 0.075);
+    font-weight: 300;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+  }
+
+  .logo__bas {
+    font-size: calc(var(--largeur-logo) * 0.2);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+</style>

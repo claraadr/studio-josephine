@@ -1,0 +1,54 @@
+---
+/*
+ * Bandeau défilant de mots-clés.
+ * - Bouton pause dont le libellé suit l’état, placé avant le texte qui bouge dans l'ordre du clavier.
+ * - S'arrête et passe sur plusieurs lignes si le visiteur demande moins d'animations.
+ * - La copie qui sert à boucler est masquée aux lecteurs d'écran.
+ * - Sans JavaScript, le bouton reste caché et le bandeau défile ; prefers-reduced-motion l'arrête.
+ */
+interface Props {
+  mots: string[];
+  label?: string;
+}
+const { mots, label = 'Savoir-faire' } = Astro.props;
+---
+
+<section class="bandeau" aria-label={label} data-pause="false">
+  <button class="bandeau__pause" type="button" hidden>
+    <span class="visually-hidden">Mettre le bandeau en pause</span>
+    <svg class="icone-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path d="M4.6 2.4c.9-.1 1.6 0 2.2.1l.1 11.1c-.7.2-1.4.2-2.3.1zM9.2 2.5c.8-.1 1.5-.1 2.2 0l-.1 11c-.7.2-1.4.2-2.2.1z" fill="currentColor"></path>
+    </svg>
+    <svg class="icone-lecture" viewBox="0 0 16 16" aria-hidden="true" focusable="false" hidden>
+      <path d="M4.4 2.3c3 1.6 5.6 3.3 8 5.6-2.4 2.3-5 4.1-8 5.8-.2-3.8-.2-7.6 0-11.4z" fill="currentColor"></path>
+    </svg>
+  </button>
+  <div class="bandeau__fenetre">
+    <div class="bandeau__piste">
+      <ul class="bandeau__liste">
+        {mots.map((mot) => <li>{mot}</li>)}
+      </ul>
+      <ul class="bandeau__liste" aria-hidden="true">
+        {mots.map((mot) => <li>{mot}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.bandeau').forEach((bandeau) => {
+    const bouton = bandeau.querySelector<HTMLButtonElement>('.bandeau__pause');
+    if (!bouton) return;
+    const libelle = bouton.querySelector('.visually-hidden');
+    const pause = bouton.querySelector('.icone-pause');
+    const lecture = bouton.querySelector('.icone-lecture');
+    bouton.hidden = false;
+    bouton.addEventListener('click', () => {
+      const enPause = bandeau.dataset.pause !== 'true';
+      bandeau.dataset.pause = String(enPause);
+      if (libelle) libelle.textContent = enPause ? 'Relancer le bandeau' : 'Mettre le bandeau en pause';
+      pause?.toggleAttribute('hidden', enPause);
+      lecture?.toggleAttribute('hidden', !enPause);
+    });
+  });
+</script>

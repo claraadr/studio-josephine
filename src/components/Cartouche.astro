@@ -1,0 +1,13 @@
+---
+/*
+ * Cartouche de discipline.
+ * Familles : branding (rose), webdesign (anis), print (lin + filet + pastille corail).
+ * Toute autre étiquette (gestion de projet, photographie…) reste neutre.
+ */
+interface Props {
+  famille?: 'branding' | 'webdesign' | 'print' | 'neutre';
+}
+const { famille = 'neutre' } = Astro.props;
+---
+
+<span class={`cartouche cartouche--${famille}`}><slot /></span>

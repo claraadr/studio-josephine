@@ -1,0 +1,114 @@
+/*
+ * Jetons de design de Studio Joséphine — seul endroit où vivent les couleurs,
+ * les polices, l'échelle typographique et les espacements.
+ * Les rapports de contraste sont ceux du brief ; toute nouvelle combinaison
+ * se calcule avant usage (voir /guide-de-styles/).
+ */
+
+@font-face {
+  font-family: 'Readex Pro';
+  src: url('/fonts/readex-pro-var-latin.woff2') format('woff2');
+  font-weight: 160 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-regular-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-medium-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins-semibold-latin.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Palette — cinq valeurs, déclarées une seule fois */
+  --c-lin: #f3eee6;
+  --c-bordeaux: #590d23;
+  --c-rose: #efc7db;
+  --c-anis: #cfc56e;
+  --c-corail: #de6d52;
+  --c-blanc: #ffffff;
+
+  /* Rôles */
+  --c-fond: var(--c-lin);
+  --c-texte: var(--c-bordeaux);
+  /* Bordeaux à 72 % sur lin : 5,8 : 1 (≥ 70 % exigé) — légendes, métadonnées */
+  --c-texte-secondaire: rgb(89 13 35 / 0.72);
+  --c-filet: rgb(89 13 35 / 0.22);
+  --c-filet-fort: var(--c-bordeaux);
+
+  /* Familles de projets (proposition, Clara tranche) */
+  --c-branding: var(--c-rose);
+  --c-webdesign: var(--c-anis);
+  --c-print: var(--c-corail); /* décor seulement : pastille, jamais fond de texte */
+
+  /* Typographies — aucune autre police */
+  --font-titres: 'Readex Pro', sans-serif;
+  --font-texte: 'Poppins', sans-serif;
+
+  /* Échelle typographique fluide (360 px → 1600 px) */
+  --step--2: clamp(0.75rem, 0.73rem + 0.08vw, 0.8rem);
+  --step--1: clamp(0.84rem, 0.81rem + 0.12vw, 0.9rem);
+  --step-0: clamp(1rem, 0.97rem + 0.16vw, 1.1rem);
+  --step-1: clamp(1.2rem, 1.13rem + 0.33vw, 1.45rem);
+  --step-2: clamp(1.44rem, 1.3rem + 0.62vw, 1.95rem);
+  --step-3: clamp(1.73rem, 1.48rem + 1.1vw, 2.6rem);
+  --step-4: clamp(2.07rem, 1.66rem + 1.85vw, 3.5rem);
+  --step-5: clamp(2.49rem, 1.8rem + 3.05vw, 4.9rem);
+  --step-6: clamp(2.9rem, 1.8rem + 5vw, 7rem);
+
+  /* Interlignages */
+  --leading-serre: 1.04;
+  --leading-titre: 1.18;
+  --leading-texte: 1.72;
+
+  /* Longueur de ligne du texte courant : 60 à 75 caractères */
+  --mesure: 64ch;
+
+  /* Espacements fluides */
+  --space-3xs: clamp(0.25rem, 0.24rem + 0.06vw, 0.3rem);
+  --space-2xs: clamp(0.5rem, 0.48rem + 0.1vw, 0.6rem);
+  --space-xs: clamp(0.75rem, 0.71rem + 0.16vw, 0.9rem);
+  --space-s: clamp(1rem, 0.95rem + 0.24vw, 1.2rem);
+  --space-m: clamp(1.5rem, 1.42rem + 0.35vw, 1.8rem);
+  --space-l: clamp(2rem, 1.85rem + 0.65vw, 2.6rem);
+  --space-xl: clamp(3rem, 2.7rem + 1.3vw, 4.2rem);
+  --space-2xl: clamp(4rem, 3.4rem + 2.6vw, 6.4rem);
+  --space-3xl: clamp(6rem, 4.8rem + 5.2vw, 10.6rem);
+
+  /* Grille éditoriale */
+  --gouttiere: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+  --marge: clamp(1.25rem, 0.5rem + 3.4vw, 5rem);
+  --largeur-max: 92rem;
+
+  /* Détails */
+  --filet: 1px solid var(--c-filet);
+  --focus: 2px solid var(--c-bordeaux);
+  --rayon-main: 0.62em 0.48em 0.58em 0.44em / 0.52em 0.62em 0.46em 0.56em;
+  --cible-min: 2.75rem; /* 44 px visés ; 24 px est le plancher WCAG */
+
+  /* Textures — en détails seulement, jamais sous un texte courant */
+  --texture-lin: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.035' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.05 0 0 0 0 0.14 0 0 0 0.55 -0.2'/%3E%3C/filter%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035 0.9' numOctaves='2' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.05 0 0 0 0 0.14 0 0 0 0.45 -0.18'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23h)'/%3E%3Crect width='220' height='220' filter='url(%23v)'/%3E%3C/svg%3E");
+  --vichy-taille: 10px;
+  --vichy-teinte: rgb(239 199 219 / 0.75);
+
+  /* Mouvement */
+  --duree-bandeau: 38s;
+}
