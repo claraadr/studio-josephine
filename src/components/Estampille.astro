@@ -1,0 +1,141 @@
+---
+/*
+ * Estampille : tampon en SVG, rond ou ovale, texte en cercle, posé de travers.
+ * Décor uniquement (aria-hidden). Deux ou trois sur tout le site, pas plus.
+ * Le contour est légèrement irrégulier, comme le logo découpé à la main,
+ * et l'encre est un peu usée (filtre SVG), sans caricature.
+ */
+interface Props {
+  forme?: 'rond' | 'ovale';
+  texte?: string;
+  texteBas?: string;
+  centre?: string;
+  angle?: number;
+  taille?: string;
+  accent?: 'aucun' | 'corail' | 'rose' | 'anis';
+  graine?: number;
+}
+
+const {
+  forme = 'rond',
+  texte = 'Studio Joséphine · graphisme print & web · ',
+  texteBas = 'graphisme print & web',
+  centre = '&',
+  angle = -9,
+  taille = forme === 'rond' ? '9rem' : '12rem',
+  accent = 'aucun',
+  graine = 3,
+} = Astro.props;
+
+// Identifiants uniques par instance (plusieurs estampilles sur une page)
+const id = `est-${graine}-${forme}-${angle}`.replace(/[^a-z0-9-]/gi, "");
+
+// Pseudo-aléatoire déterministe : même dessin à chaque construction
+function alea(n: number) {
+  const x = Math.sin(n * 12.9898 + graine * 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// Contour irrégulier : une ellipse dont le rayon ondule très légèrement
+function contour(cx: number, cy: number, rx: number, ry: number, amp: number, decalage: number) {
+  const pas = 48;
+  const points = Array.from({ length: pas }, (_, i) => {
+    const t = (i / pas) * Math.PI * 2;
+    const d = 1 + (alea(i + decalage) - 0.5) * amp;
+    return [cx + Math.cos(t) * rx * d, cy + Math.sin(t) * ry * d];
+  });
+  // Lissage en courbes quadratiques entre les milieux des segments
+  const milieu = (a: number[], b: number[]) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  let d = `M${milieu(points[pas - 1], points[0]).map((v) => v.toFixed(2)).join(' ')}`;
+  points.forEach((p, i) => {
+    const m = milieu(p, points[(i + 1) % pas]);
+    d += ` Q${p[0].toFixed(2)} ${p[1].toFixed(2)} ${m[0].toFixed(2)} ${m[1].toFixed(2)}`;
+  });
+  return `${d}Z`;
+}
+
+const rond = forme === 'rond';
+const L = rond ? 200 : 260;
+const H = rond ? 200 : 170;
+const cx = L / 2;
+const cy = H / 2;
+const rx = rond ? 92 : 122;
+const ry = rond ? 92 : 78;
+
+const accents = {
+  aucun: 'none',
+  corail: 'var(--c-corail)',
+  rose: 'var(--c-rose)',
+  anis: 'var(--c-anis)',
+};
+const fondAccent = accents[accent];
+---
+
+<svg
+  class="estampille"
+  viewBox={`0 0 ${L} ${H}`}
+  style={`--angle: ${angle}deg; --taille: ${taille};`}
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <filter id={`${id}-encre`} x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed={graine} result="bruit"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="bruit" scale="1.6" result="deplace"></feDisplacementMap>
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed={graine + 7} result="usure"></feTurbulence>
+      <feColorMatrix in="usure" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="masque"></feColorMatrix>
+      <feComposite in="deplace" in2="masque" operator="in"></feComposite>
+    </filter>
+    {
+      rond ? (
+        <path id={`${id}-cercle`} d={`M ${cx - 66} ${cy} a 66 66 0 1 1 132 0 a 66 66 0 1 1 -132 0`} />
+      ) : (
+        <>
+          <path id={`${id}-haut`} d={`M ${cx - 92} ${cy} A 92 52 0 0 1 ${cx + 92} ${cy}`} />
+          <path id={`${id}-bas`} d={`M ${cx - 100} ${cy} A 100 61 0 0 0 ${cx + 100} ${cy}`} />
+        </>
+      )
+    }
+  </defs>
+
+  {
+    fondAccent !== 'none' && (
+      <path d={contour(cx, cy, rx + 2, ry + 2, 0.035, 50)} fill={fondAccent} opacity="0.9" />
+    )
+  }
+
+  <g filter={`url(#${id}-encre)`} fill="currentColor" stroke="currentColor">
+    <path d={contour(cx, cy, rx, ry, 0.03, 0)} fill="none" stroke-width="2.6"></path>
+    <path d={contour(cx, cy, rx - 9, ry - 9, 0.025, 100)} fill="none" stroke-width="1.1"></path>
+    <path d={contour(cx, cy, rx - (rond ? 46 : 40), ry - (rond ? 46 : 32), 0.03, 200)} fill="none" stroke-width="1.1"></path>
+    {
+      rond ? (
+        <text font-size="13.2" stroke="none">
+          <textPath href={`#${id}-cercle`} textLength="405" lengthAdjust="spacing">
+            {texte}
+          </textPath>
+        </text>
+      ) : (
+        <>
+          <text font-size="13" stroke="none" text-anchor="middle">
+            <textPath href={`#${id}-haut`} startOffset="50%">{texte}</textPath>
+          </text>
+          <text font-size="11.5" stroke="none" text-anchor="middle">
+            <textPath href={`#${id}-bas`} startOffset="50%">{texteBas}</textPath>
+          </text>
+        </>
+      )
+    }
+    <text
+      x={cx}
+      y={cy}
+      font-size={rond ? 44 : 40}
+      stroke="none"
+      text-anchor="middle"
+      dominant-baseline="central"
+      style="font-weight: 300; letter-spacing: 0; text-transform: none;"
+    >
+      {centre}
+    </text>
+  </g>
+</svg>
