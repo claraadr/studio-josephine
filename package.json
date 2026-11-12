@@ -10,7 +10,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check:a11y": "node scripts/check-a11y.mjs"
+    "check:a11y": "node scripts/check-a11y.mjs",
+    "image:partage": "node scripts/image-partage.mjs",
+    "check:typo": "node scripts/check-typo.mjs"
   },
   "dependencies": {
     "astro": "7.4.11"

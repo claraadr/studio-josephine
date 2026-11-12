@@ -1,0 +1,411 @@
+---
+/**
+ * Contact : un formulaire qui qualifie la demande.
+ * - Avec l'adresse d'un service de formulaires (variable PUBLIC_FORMULAIRE_URL) : envoi classique,
+ *   le service renvoie vers /contact/merci/.
+ * - Sans adresse : le bouton ouvre la messagerie du visiteur avec un email prérempli.
+ * Fonctionne sans JavaScript ; avec, les erreurs s'affichent en toutes lettres sous chaque champ.
+ */
+import Base from '../../layouts/Base.astro';
+import ACompleter from '../../components/ACompleter.astro';
+import { studio, formulaire } from '../../config';
+import { url } from '../../lib/url';
+
+const objets = [
+  { valeur: 'Une identité de marque', creationOuRefonte: true },
+  { valeur: 'Un site web', creationOuRefonte: true },
+  { valeur: 'Un support imprimé' },
+  { valeur: 'Un recrutement ou une collaboration' },
+  { valeur: 'Autre chose' },
+];
+
+const parService = formulaire.action !== '';
+const sujet = 'Demande via le site Studio Joséphine';
+const action = parService ? formulaire.action : `mailto:${studio.email ?? ''}?subject=${encodeURIComponent(sujet)}`;
+const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
+---
+
+<Base
+  titre="Contact"
+  description="Décrivez votre projet d’identité de marque, de site web ou de support imprimé à Clara Audureau. Vous recrutez ? Écrivez-lui aussi."
+>
+  <header class="conteneur grille page-tete">
+    <h1>Parlons de votre projet</h1>
+    <p class="chapeau">
+      Quelques lignes suffisent pour commencer. Je vous réponds avec une proposition adaptée à votre demande.
+    </p>
+  </header>
+
+  <div class="conteneur grille contact">
+    <form
+      class="formulaire"
+      action={action}
+      method="post"
+      enctype={parService ? undefined : 'text/plain'}
+      data-mode={parService ? 'service' : 'email'}
+      data-email={studio.email ?? ''}
+      data-sujet={sujet}
+    >
+      <p class="legende">Tous les champs sont obligatoires, sauf ceux marqués «&nbsp;facultatif&nbsp;».</p>
+
+      <div class="champ">
+        <label for="nom">Nom</label>
+        <input id="nom" name="nom" type="text" autocomplete="name" required />
+        <p class="erreur" id="nom-erreur" hidden></p>
+      </div>
+
+      <div class="champ">
+        <label for="email">Adresse email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+        <p class="erreur" id="email-erreur" hidden></p>
+      </div>
+
+      <div class="champ">
+        <label for="entreprise">Entreprise ou structure <span class="facultatif">(facultatif)</span></label>
+        <input id="entreprise" name="entreprise" type="text" autocomplete="organization" />
+      </div>
+
+      <fieldset class="choix" id="objet">
+        <legend>Objet de la demande</legend>
+        {
+          objets.map((o) => (
+            <label class="choix__option">
+              <input
+                type="radio"
+                name="objet"
+                value={o.valeur}
+                required
+                data-creation-ou-refonte={o.creationOuRefonte ? 'oui' : undefined}
+              />
+              <span>{o.valeur}</span>
+            </label>
+          ))
+        }
+        <p class="erreur" id="objet-erreur" hidden></p>
+      </fieldset>
+
+      <fieldset class="choix choix--secondaire" id="creation-ou-refonte">
+        <legend>Création ou refonte&nbsp;? <span class="facultatif">(facultatif)</span></legend>
+        <p class="aide">Pour une identité de marque ou un site web.</p>
+        <label class="choix__option">
+          <input type="radio" name="creation_ou_refonte" value="Création" />
+          <span>Une création</span>
+        </label>
+        <label class="choix__option">
+          <input type="radio" name="creation_ou_refonte" value="Refonte" />
+          <span>Une refonte</span>
+        </label>
+      </fieldset>
+
+      <div class="champ">
+        <label for="message">Votre message</label>
+        <p class="aide" id="message-aide">Votre activité, votre besoin, ce que vous avez déjà.</p>
+        <textarea id="message" name="message" rows="7" required aria-describedby="message-aide"></textarea>
+        <p class="erreur" id="message-erreur" hidden></p>
+      </div>
+
+      <div class="champ">
+        <label for="delai">Délai souhaité <span class="facultatif">(facultatif)</span></label>
+        <p class="aide" id="delai-aide">Une date ou une période, si vous en avez une.</p>
+        <input id="delai" name="delai" type="text" aria-describedby="delai-aide" />
+      </div>
+
+      <!-- Champ piège anti-spam : invisible et ignoré par les visiteurs, rempli par les robots -->
+      <div class="piege" aria-hidden="true">
+        <label for="piege">Ne pas remplir ce champ</label>
+        <input id="piege" name={formulaire.champPiege} type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      {
+        parService && (
+          <>
+            <input type="hidden" name="_subject" value={sujet} />
+            <input type="hidden" name="_next" value={pageMerci} />
+          </>
+        )
+      }
+
+      <div class="formulaire__envoi">
+        <button class="bouton" type="submit">Envoyer ma demande</button>
+        <p class="legende">
+          {
+            parService
+              ? 'Vos informations servent uniquement à répondre à votre demande.'
+              : 'Le bouton ouvre votre messagerie avec votre demande prête à partir.'
+          }{' '}
+          <a href={url('/confidentialite/')}>Confidentialité</a>
+        </p>
+      </div>
+
+      <div class="confirmation" role="status" tabindex="-1" hidden>
+        <p class="confirmation__titre">Votre messagerie s’ouvre.</p>
+        <p>
+          Votre demande y est prête&nbsp;: il ne reste qu’à l’envoyer. Je la lis et je vous réponds par email. Si votre
+          messagerie ne s’ouvre pas, écrivez-moi directement à l’adresse indiquée à côté du formulaire.
+        </p>
+      </div>
+    </form>
+
+    <aside class="contact__direct" aria-labelledby="direct-titre">
+      <h2 id="direct-titre">Me joindre directement</h2>
+      <ul>
+        <li>
+          {studio.email ? <a href={`mailto:${studio.email}`}>{studio.email}</a> : <ACompleter quoi="adresse email" />}
+        </li>
+        <li>
+          {studio.linkedin ? <a href={studio.linkedin}>Mon profil LinkedIn</a> : <ACompleter quoi="lien LinkedIn" />}
+        </li>
+      </ul>
+      <p class="contact__recrutement">
+        Vous recrutez&nbsp;? Choisissez «&nbsp;Un recrutement ou une collaboration&nbsp;» dans l’objet de la demande.
+      </p>
+    </aside>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.formulaire');
+  if (form) {
+    form.noValidate = true; // les messages ci-dessous remplacent ceux du navigateur
+
+    const groupeCreation = form.querySelector<HTMLFieldSetElement>('#creation-ou-refonte');
+    const objets = [...form.querySelectorAll<HTMLInputElement>('input[name="objet"]')];
+
+    // « Création ou refonte ? » n'apparaît que pour une identité de marque ou un site web
+    const majCreation = () => {
+      const choisi = objets.find((o) => o.checked);
+      const montrer = choisi?.dataset.creationOuRefonte === 'oui';
+      if (groupeCreation) {
+        groupeCreation.hidden = !montrer;
+        if (!montrer) groupeCreation.querySelectorAll('input').forEach((i) => (i.checked = false));
+      }
+    };
+    objets.forEach((o) => o.addEventListener('change', majCreation));
+    majCreation();
+
+    const regles: { id: string; verifier: () => string | null }[] = [
+      {
+        id: 'nom',
+        verifier: () => ((form.elements.namedItem('nom') as HTMLInputElement).value.trim() ? null : 'Indiquez votre nom.'),
+      },
+      {
+        id: 'email',
+        verifier: () => {
+          const v = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+          if (!v) return 'Indiquez votre adresse email, pour que je puisse vous répondre.';
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Cette adresse email semble incomplète. Exemple\u00a0: prenom@domaine.fr';
+          return null;
+        },
+      },
+      { id: 'objet', verifier: () => (objets.some((o) => o.checked) ? null : 'Choisissez l’objet de votre demande.') },
+      {
+        id: 'message',
+        verifier: () =>
+          (form.elements.namedItem('message') as HTMLTextAreaElement).value.trim()
+            ? null
+            : 'Écrivez quelques mots sur votre projet.',
+      },
+    ];
+
+    const afficher = (id: string, message: string | null) => {
+      const erreur = form.querySelector<HTMLElement>(`#${id}-erreur`);
+      const cible = form.querySelector<HTMLElement>(`#${id}`);
+      if (!erreur || !cible) return;
+      erreur.textContent = message ?? '';
+      erreur.hidden = !message;
+      const champs = cible.matches('fieldset') ? [cible, ...cible.querySelectorAll<HTMLElement>('input')] : [cible];
+      for (const champ of champs) {
+        if (message) champ.setAttribute('aria-invalid', 'true');
+        else champ.removeAttribute('aria-invalid');
+        const decrit = (champ.getAttribute('aria-describedby') ?? '').split(' ').filter((x) => x && x !== erreur.id);
+        if (message) decrit.unshift(erreur.id);
+        if (decrit.length) champ.setAttribute('aria-describedby', decrit.join(' '));
+        else champ.removeAttribute('aria-describedby');
+      }
+    };
+
+    // Une erreur corrigée disparaît pendant la saisie, dès que le champ est valide
+    // (pas à la sortie du champ : la page bougerait sous le clic suivant).
+    for (const r of regles) {
+      const evenement = r.id === 'objet' ? 'change' : 'input';
+      form.querySelector(`#${r.id}`)?.addEventListener(evenement, () => {
+        if (form.querySelector<HTMLElement>(`#${r.id}-erreur`)?.hidden) return;
+        if (r.verifier() === null) afficher(r.id, null);
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      let premier: HTMLElement | null = null;
+      for (const r of regles) {
+        const message = r.verifier();
+        afficher(r.id, message);
+        if (message && !premier) {
+          const cible = form.querySelector<HTMLElement>(`#${r.id}`);
+          premier = cible?.matches('fieldset') ? cible.querySelector('input') : cible;
+        }
+      }
+      if (premier) {
+        e.preventDefault();
+        premier.focus();
+        return;
+      }
+
+      if (form.dataset.mode !== 'email') return; // envoi classique vers le service de formulaires
+
+      // Sans service : email prérempli dans la messagerie du visiteur
+      e.preventDefault();
+      const donnees = new FormData(form);
+      const ligne = (titre: string, cle: string) => {
+        const v = String(donnees.get(cle) ?? '').trim();
+        return v ? `${titre} : ${v}` : null;
+      };
+      const corps = [
+        ligne('Nom', 'nom'),
+        ligne('Email', 'email'),
+        ligne('Entreprise ou structure', 'entreprise'),
+        ligne('Objet', 'objet'),
+        ligne('Création ou refonte', 'creation_ou_refonte'),
+        ligne('Délai souhaité', 'delai'),
+        '',
+        String(donnees.get('message') ?? '').trim(),
+      ]
+        .filter((l) => l !== null)
+        .join('\n');
+      const objet = `${form.dataset.sujet} : ${String(donnees.get('objet') ?? '')}`;
+      window.location.href = `mailto:${form.dataset.email ?? ''}?subject=${encodeURIComponent(objet)}&body=${encodeURIComponent(corps)}`;
+      const confirmation = form.querySelector<HTMLElement>('.confirmation');
+      if (confirmation) {
+        confirmation.hidden = false;
+        confirmation.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact {
+    row-gap: var(--space-2xl);
+  }
+
+  .formulaire {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-l);
+    max-inline-size: 38rem;
+  }
+
+  .contact__direct {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+  }
+
+  .contact__direct h2 {
+    font-size: var(--step-2);
+    font-weight: 300;
+  }
+
+  .contact__direct ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact__direct a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cible-min);
+  }
+
+  .contact__recrutement {
+    max-inline-size: 30ch;
+    padding-top: var(--space-s);
+    border-top: var(--filet);
+  }
+
+  @media (min-width: 64em) {
+    .formulaire {
+      grid-column: 1 / 8;
+    }
+
+    .contact__direct {
+      grid-column: 9 / 13;
+      position: sticky;
+      top: var(--space-l);
+      align-self: start;
+    }
+  }
+
+  .facultatif {
+    font-weight: 400;
+    color: var(--c-texte-secondaire);
+  }
+
+  .choix {
+    display: grid;
+    gap: var(--space-3xs);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .choix legend {
+    margin-bottom: var(--space-2xs);
+    padding: 0;
+    font-weight: 500;
+  }
+
+  .choix__option {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    min-height: var(--cible-min);
+    cursor: pointer;
+  }
+
+  .choix__option input {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    accent-color: var(--c-bordeaux);
+  }
+
+  .choix .aide,
+  .champ .aide {
+    margin-top: calc(var(--space-3xs) * -1);
+  }
+
+  .formulaire__envoi {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+  }
+
+  .piege {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .confirmation {
+    display: grid;
+    gap: var(--space-2xs);
+    padding: var(--space-m);
+    border: 1px solid var(--c-bordeaux);
+    border-radius: 0.3em;
+  }
+
+  .confirmation__titre {
+    font-family: var(--font-titres);
+    font-size: var(--step-2);
+    font-weight: 300;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+</style>

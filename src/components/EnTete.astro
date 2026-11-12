@@ -1,0 +1,170 @@
+---
+/**
+ * En-tête : le logo (lien vers l'accueil), puis Projets, Services, Contact.
+ * Sur mobile, un bouton « Menu » ouvre la liste ; sans JavaScript, les liens restent visibles.
+ */
+import Logo from './Logo.astro';
+import { url } from '../lib/url';
+
+const liens = [
+  { href: '/projets/', texte: 'Projets' },
+  { href: '/services/', texte: 'Services' },
+  { href: '/contact/', texte: 'Contact' },
+];
+
+const chemin = Astro.url.pathname;
+function etat(href: string): 'page' | 'true' | undefined {
+  const cible = url(href);
+  if (chemin === cible) return 'page';
+  if (chemin.startsWith(cible)) return 'true';
+  return undefined;
+}
+---
+
+<header class="entete">
+  <div class="conteneur entete__barre">
+    <Logo lien largeur="clamp(9.5rem, 8.4rem + 3vw, 11.5rem)" />
+    <nav class="nav" aria-label="Navigation principale">
+      <button class="nav__bouton" type="button" aria-expanded="false" aria-controls="nav-liste" hidden>
+        Menu
+        <svg viewBox="0 0 22 12" aria-hidden="true" focusable="false">
+          <path d="M1.5 2.2c6.4-.5 12.7-.6 19 .1M1.5 9.6c6.2.4 12.6.4 19-.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <ul class="nav__liste" id="nav-liste">
+        {
+          liens.map((lien) => (
+            <li>
+              <a href={url(lien.href)} aria-current={etat(lien.href)}>
+                {lien.texte}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.nav');
+  const bouton = nav?.querySelector<HTMLButtonElement>('.nav__bouton');
+  if (nav && bouton) {
+    const mobile = window.matchMedia('(max-width: 47.99em)');
+    const fermer = (rendreLeFocus = false) => {
+      nav.dataset.ouvert = 'false';
+      bouton.setAttribute('aria-expanded', 'false');
+      if (rendreLeFocus) bouton.focus();
+    };
+    nav.dataset.amelioree = 'true';
+    bouton.hidden = false;
+    fermer();
+    bouton.addEventListener('click', () => {
+      const ouvert = nav.dataset.ouvert === 'true';
+      nav.dataset.ouvert = String(!ouvert);
+      bouton.setAttribute('aria-expanded', String(!ouvert));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.dataset.ouvert === 'true') fermer(true);
+    });
+    mobile.addEventListener('change', () => fermer());
+  }
+</script>
+
+<style>
+  .entete {
+    position: relative;
+    z-index: 5;
+  }
+
+  .entete__barre {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs) var(--space-m);
+    padding-block: var(--space-s);
+  }
+
+  .nav__liste {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav__liste a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--cible-min);
+    font-weight: 500;
+    text-decoration-line: none;
+  }
+
+  .nav__liste a:hover,
+  .nav__liste a[aria-current] {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35em;
+  }
+
+  .nav__liste a[aria-current='page'] {
+    text-decoration-thickness: 2px;
+  }
+
+  .nav__bouton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    min-height: var(--cible-min);
+    padding: 0 0.2em;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: 500 var(--step-0) / 1 var(--font-texte);
+    cursor: pointer;
+  }
+
+  .nav__bouton svg {
+    width: 1.35rem;
+    height: auto;
+  }
+
+  @media (max-width: 47.99em) {
+    .nav[data-amelioree='true'] .nav__liste {
+      display: none;
+    }
+
+    .nav[data-ouvert='true'] .nav__liste {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      display: grid;
+      gap: 0;
+      padding: var(--space-2xs) var(--marge) var(--space-m);
+      background: var(--c-lin);
+      border-bottom: 1px solid var(--c-bordeaux);
+    }
+
+    .nav[data-ouvert='true'] .nav__liste li + li {
+      border-top: var(--filet);
+    }
+
+    .nav[data-ouvert='true'] .nav__liste a {
+      width: 100%;
+      min-height: 3.25rem;
+      font-family: var(--font-titres);
+      font-size: var(--step-2);
+      font-weight: 300;
+    }
+  }
+
+  @media (min-width: 48em) {
+    .nav__bouton {
+      display: none;
+    }
+  }
+</style>

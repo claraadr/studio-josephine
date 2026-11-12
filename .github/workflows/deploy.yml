@@ -44,6 +44,21 @@ jobs:
         env:
           SITE: ${{ steps.pages.outputs.origin }}
           BASE: ${{ steps.pages.outputs.base_path }}
+          # Réglables sans toucher au code : Settings → Secrets and variables → Actions → Variables
+          PUBLIC_FORMULAIRE_URL: ${{ vars.FORMULAIRE_URL }}
+          PUBLIC_INDEXATION: ${{ vars.INDEXATION }}
+
+      # Contrôles avant publication : si l'un échoue, le site en ligne ne change pas.
+      - name: Vérifier la typographie française
+        run: npm run check:typo
+
+      - name: Installer le navigateur de test
+        run: npx playwright install --with-deps chromium
+
+      - name: Vérifier l'accessibilité (axe, WCAG 2.2 AA)
+        run: npm run check:a11y
+        env:
+          BASE: ${{ steps.pages.outputs.base_path }}
 
       - uses: actions/upload-pages-artifact@v5
         with:

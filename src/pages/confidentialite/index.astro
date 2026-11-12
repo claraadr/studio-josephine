@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import ACompleter from '../../components/ACompleter.astro';
+import { studio, formulaire } from '../../config';
+import { url } from '../../lib/url';
+
+const parService = formulaire.action !== '';
+---
+
+<Base
+  titre="Confidentialité"
+  description="Ce que deviennent les informations envoyées par le formulaire de contact du site Studio Joséphine."
+>
+  <header class="conteneur grille page-tete">
+    <h1>Confidentialité</h1>
+    <p class="chapeau">
+      Ce site ne dépose aucun cookie et n’utilise aucun outil de mesure d’audience ni aucun traceur. Les polices sont
+      hébergées sur le site&nbsp;: en le parcourant, votre navigateur ne contacte aucun service tiers.
+    </p>
+  </header>
+
+  <div class="conteneur legal">
+    <section aria-labelledby="recueil">
+      <h2 id="recueil">Ce que le formulaire recueille</h2>
+      <p>
+        Votre nom, votre adresse email, l’objet de votre demande et votre message. Si vous les indiquez&nbsp;: votre
+        entreprise ou structure, s’il s’agit d’une création ou d’une refonte, et le délai souhaité.
+      </p>
+    </section>
+
+    <section aria-labelledby="pourquoi">
+      <h2 id="pourquoi">Pourquoi</h2>
+      <p>
+        Pour répondre à votre demande et, si elle porte sur un projet, vous envoyer une proposition. Ces informations ne
+        sont ni vendues ni transmises à des tiers.
+      </p>
+    </section>
+
+    <section aria-labelledby="chemin">
+      <h2 id="chemin">Par où elles passent</h2>
+      {
+        parService ? (
+          <p>
+            Votre demande est transmise par le service de formulaires{' '}
+            {formulaire.service ?? <ACompleter quoi="nom du service de formulaires" />}, puis arrive dans la messagerie de{' '}
+            {studio.personne}.
+          </p>
+        ) : (
+          <p>
+            Le formulaire ouvre votre propre messagerie&nbsp;: votre demande part de votre adresse email vers celle de{' '}
+            {studio.personne}, sans passer par un autre service.
+          </p>
+        )
+      }
+      <p>
+        L’hébergeur du site, GitHub, enregistre l’adresse IP des visiteurs dans ses journaux techniques, pour la sécurité
+        du service.
+      </p>
+    </section>
+
+    <section aria-labelledby="duree">
+      <h2 id="duree">Combien de temps</h2>
+      <p>
+        Les demandes reçues sont conservées {studio.dureeConservation ?? <ACompleter quoi="durée de conservation" />}, puis
+        supprimées.
+      </p>
+    </section>
+
+    <section aria-labelledby="droits">
+      <h2 id="droits">Vos droits</h2>
+      <p>
+        Vous pouvez demander à consulter, corriger ou supprimer vos informations en écrivant à{' '}
+        {studio.email ? <a href={`mailto:${studio.email}`}>{studio.email}</a> : <ACompleter quoi="adresse email" />}. Vous
+        pouvez aussi adresser une réclamation à la CNIL, sur <a href="https://www.cnil.fr">cnil.fr</a>.
+      </p>
+      <p>Pour l’éditeur et l’hébergeur du site, voir les <a href={url('/mentions-legales/')}>mentions légales</a>.</p>
+    </section>
+  </div>
+</Base>

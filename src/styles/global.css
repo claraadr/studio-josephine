@@ -22,6 +22,7 @@ body {
   font-weight: 400;
   line-height: var(--leading-texte);
   font-kerning: normal;
+  font-synthesis: none;
   font-variant-ligatures: common-ligatures;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -63,6 +64,16 @@ ol,
 dl,
 figure {
   margin: 0;
+}
+
+strong,
+b {
+  font-weight: 600;
+}
+
+em,
+i {
+  font-style: italic;
 }
 
 p {
@@ -225,16 +236,19 @@ code {
   font-weight: 500;
 }
 
-.lien-fleche .fleche {
+.fleche {
   display: inline-block;
+  flex: none;
   width: 1.1em;
   height: auto;
   align-self: center;
+  transform: rotate(var(--rotation, 0deg));
   transition: transform 0.2s ease;
 }
 
-.lien-fleche:hover .fleche {
-  transform: translateX(0.25em);
+.lien-fleche:hover .fleche,
+.bouton:hover .fleche {
+  transform: rotate(var(--rotation, 0deg)) translateX(0.22em);
 }
 
 /* ---------- Champs de formulaire ---------- */

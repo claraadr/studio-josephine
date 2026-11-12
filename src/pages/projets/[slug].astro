@@ -1,0 +1,396 @@
+---
+/**
+ * Étude de cas : en-tête et fiche du projet, visuel d'ouverture, puis Contexte, Objectif,
+ * Processus (illustré), Résultat, la phrase de fin, le projet suivant et une invitation au contact.
+ */
+import Base from '../../layouts/Base.astro';
+import Visuel from '../../components/Visuel.astro';
+import Galerie from '../../components/Galerie.astro';
+import Cartouche from '../../components/Cartouche.astro';
+import Fleche from '../../components/Fleche.astro';
+import { projetsTries, nomFamille, autresDisciplines, numero, type Projet } from '../../lib/projets';
+import { typo, typoHtml } from '../../lib/typographie.mjs';
+import { url } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const projets = await projetsTries();
+  return projets.map((projet, i) => ({
+    params: { slug: projet.id },
+    props: { projet, suivant: projets[(i + 1) % projets.length] },
+  }));
+}
+
+interface Props {
+  projet: Projet;
+  suivant: Projet;
+}
+
+const { projet, suivant } = Astro.props;
+const d = projet.data;
+
+// Le texte du fichier Markdown, découpé selon ses titres ## : toujours ces quatre parties, dans cet ordre.
+const PARTIES = ['Contexte', 'Objectif', 'Processus', 'Résultat'];
+const html = projet.rendered?.html ?? '';
+const morceaux = html.split(/<h2[^>]*>([\s\S]*?)<\/h2>/);
+const parties: { titre: string; html: string }[] = [];
+for (let i = 1; i < morceaux.length; i += 2) {
+  parties.push({ titre: morceaux[i].replace(/<[^>]+>/g, '').trim(), html: typoHtml(morceaux[i + 1].trim()) });
+}
+if (parties.map((p) => p.titre).join('|') !== PARTIES.join('|')) {
+  throw new Error(
+    `Projet « ${d.titre} » : le texte doit contenir, dans cet ordre, les titres ## Contexte, ## Objectif, ## Processus et ## Résultat. Trouvé : ${parties.map((p) => p.titre).join(', ') || 'aucun titre'}.`,
+  );
+}
+if (/<img\b/i.test(html)) {
+  throw new Error(`Projet « ${d.titre} » : les images se déclarent en tête du fichier (images:), pas dans le texte.`);
+}
+const [contexte, objectif, processus, resultat] = parties;
+
+// Visuels : ceux du fichier, sinon des aplats légendés aux formats prévus.
+const aplats = (n: number) => Array.from({ length: n }, () => ({}));
+const blocsProcessus = d.images?.processus ?? [
+  { format: 'pleine' as const, images: aplats(1) },
+  { format: 'paire' as const, images: aplats(2) },
+  { format: 'triptyque' as const, images: aplats(3) },
+];
+const blocsResultat = d.images?.resultat ?? [
+  { format: 'pleine' as const, images: aplats(1) },
+  { format: 'detail' as const, images: aplats(1) },
+];
+const ouverture = d.images?.ouverture ?? d.couverture;
+
+const fiche: [string, string][] = [
+  ['Client', d.client],
+  ['Secteur', d.secteur],
+  ['Mon rôle', d.role],
+  ['Disciplines', d.disciplines.join(', ')],
+];
+if (d.annee) fiche.push(['Année', String(d.annee)]);
+
+const premiereLettre = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+const titrePage = typo(`${d.titre} : ${premiereLettre(d.sousTitre)}`);
+const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}.`);
+---
+
+<Base titre={titrePage} description={description}>
+  <article class="cas">
+    <header class="conteneur grille cas-tete">
+      <p class="cas-retour">
+        <a class="lien-fleche" href={url('/projets/')}><Fleche sens="gauche" /> Tous les projets</a>
+      </p>
+      <h1 class="cas-titre">
+        <span class="cas-titre__nom">{typo(d.titre)}</span>
+        <span class="cas-titre__sous">{typo(d.sousTitre)}</span>
+      </h1>
+      <div class="cas-etiquettes">
+        <ul class="cartouches" aria-label="Familles et disciplines">
+          {
+            d.familles.map((f) => (
+              <li>
+                <Cartouche famille={f}>{nomFamille(f)}</Cartouche>
+              </li>
+            ))
+          }
+          {
+            autresDisciplines(projet).map((discipline) => (
+              <li>
+                <Cartouche>{typo(discipline)}</Cartouche>
+              </li>
+            ))
+          }
+        </ul>
+        {d.mention && <p class="cas-mention">{typo(d.mention)}</p>}
+      </div>
+      <dl class="fiche">
+        {
+          fiche.map(([terme, valeur]) => (
+            <div>
+              <dt>{terme}</dt>
+              <dd>{typo(valeur)}</dd>
+            </div>
+          ))
+        }
+        {
+          d.credits && d.credits.length > 0 && (
+            <div>
+              <dt>Crédits</dt>
+              <dd>
+                <ul>
+                  {d.credits.map((c) => (
+                    <li>{typo(c)}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </header>
+
+    <div class="conteneur cas-ouverture">
+      <Visuel
+        image={ouverture?.image}
+        alt={ouverture?.alt}
+        ratio="16 / 9"
+        sizes="(min-width: 92rem) 84rem, 92vw"
+        prioritaire
+        legende={`Visuel d’ouverture à venir · ${typo(d.titre)}`}
+      />
+    </div>
+
+    <div class="conteneur grille cas-debut">
+      <section class="cas-court" aria-labelledby="contexte">
+        <span class="numero" aria-hidden="true">01</span>
+        <h2 id="contexte">{contexte.titre}</h2>
+        <div class="prose prose--grande" set:html={contexte.html} />
+      </section>
+      <section class="cas-court" aria-labelledby="objectif">
+        <span class="numero" aria-hidden="true">02</span>
+        <h2 id="objectif">{objectif.titre}</h2>
+        <div class="prose prose--grande" set:html={objectif.html} />
+      </section>
+    </div>
+
+    <section class="conteneur grille section cas-partie" aria-labelledby="processus">
+      <header class="marge tete">
+        <span class="numero" aria-hidden="true">03</span>
+        <h2 id="processus">{processus.titre}</h2>
+      </header>
+      <div class="corps prose" set:html={processus.html} />
+      <div class="cas-galeries">
+        {blocsProcessus.map((bloc) => <Galerie format={bloc.format} images={bloc.images} />)}
+      </div>
+    </section>
+
+    <section class="conteneur grille section cas-partie" aria-labelledby="resultat">
+      <header class="marge tete">
+        <span class="numero" aria-hidden="true">04</span>
+        <h2 id="resultat">{resultat.titre}</h2>
+      </header>
+      <div class="corps prose" set:html={resultat.html} />
+      <div class="cas-galeries">
+        {blocsResultat.map((bloc) => <Galerie format={bloc.format} images={bloc.images} />)}
+      </div>
+    </section>
+
+    <div class="conteneur grille cas-fin">
+      <p class="cas-conclusion">{typo(d.conclusion)}</p>
+    </div>
+
+    <nav class="conteneur cas-suivant" aria-label="Projet suivant">
+      <a class="cas-suivant__lien" href={url(`/projets/${suivant.id}/`)}>
+        <span class="surtitre">Projet suivant</span>
+        <span class="cas-suivant__titre">{typo(suivant.data.titre)} <Fleche /></span>
+        <span class="cas-suivant__sous">{typo(suivant.data.sousTitre)}</span>
+      </a>
+    </nav>
+
+    <p class="conteneur cas-contact">
+      Un projet du même ordre&nbsp;? <a href={url('/contact/')}>Parlons-en</a>.
+    </p>
+  </article>
+</Base>
+
+<style>
+  .cas-tete {
+    row-gap: var(--space-m);
+    padding-block: var(--space-l) var(--space-xl);
+  }
+
+  .cas-retour,
+  .cas-titre,
+  .cas-etiquettes,
+  .fiche {
+    grid-column: 1 / -1;
+  }
+
+  .cas-retour {
+    font-size: var(--step--1);
+  }
+
+  .cas-titre {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .cas-titre__nom {
+    font-size: var(--step-6);
+    font-weight: 200;
+    line-height: var(--leading-serre);
+    letter-spacing: -0.03em;
+  }
+
+  .cas-titre__sous {
+    max-inline-size: 26ch;
+    font-size: var(--step-2);
+    font-weight: 300;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .cas-etiquettes {
+    display: grid;
+    gap: var(--space-s);
+    justify-items: start;
+  }
+
+  .cas-mention {
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .fiche {
+    display: grid;
+    align-content: start;
+    font-size: var(--step--1);
+  }
+
+  .fiche > div {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-s);
+    padding-block: 0.6em;
+    border-top: var(--filet);
+  }
+
+  .fiche > div:last-child {
+    border-bottom: var(--filet);
+  }
+
+  .fiche dt {
+    font-weight: 500;
+  }
+
+  .fiche dd {
+    margin: 0;
+  }
+
+  .fiche ul {
+    display: grid;
+    gap: 0.35em;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 64em) {
+    .cas-titre {
+      grid-column: 1 / 9;
+    }
+
+    .cas-etiquettes {
+      grid-column: 1 / 8;
+    }
+
+    .fiche {
+      grid-column: 9 / 13;
+      grid-row: 2 / 4;
+      align-self: end;
+    }
+  }
+
+  .cas-ouverture {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .cas-debut {
+    row-gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  .cas-court {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-2xs);
+    align-content: start;
+  }
+
+  .cas-court h2 {
+    margin-bottom: var(--space-2xs);
+    font-size: var(--step-3);
+    font-weight: 300;
+  }
+
+  @media (min-width: 64em) {
+    .cas-court:first-child {
+      grid-column: 1 / 6;
+    }
+
+    .cas-court:last-child {
+      grid-column: 7 / 12;
+      padding-top: var(--space-2xl);
+    }
+  }
+
+  .cas-galeries {
+    display: grid;
+    gap: var(--space-l);
+    margin-top: var(--space-m);
+  }
+
+  .cas-fin {
+    padding-block: var(--space-2xl);
+    border-top: var(--filet);
+  }
+
+  .cas-conclusion {
+    grid-column: 1 / -1;
+    font-family: var(--font-titres);
+    font-size: var(--step-3);
+    font-weight: 300;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 64em) {
+    .cas-conclusion {
+      grid-column: 2 / 11;
+    }
+  }
+
+  .cas-suivant {
+    padding-block: var(--space-xl);
+    border-top: 1px solid var(--c-bordeaux);
+  }
+
+  .cas-suivant__lien {
+    display: grid;
+    gap: var(--space-2xs);
+    text-decoration-line: none;
+  }
+
+  .cas-suivant__titre {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-family: var(--font-titres);
+    font-size: var(--step-5);
+    font-weight: 250;
+    line-height: var(--leading-serre);
+    letter-spacing: -0.025em;
+  }
+
+  .cas-suivant__titre :global(.fleche) {
+    width: 0.6em;
+  }
+
+  .cas-suivant__lien:hover .cas-suivant__titre {
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+  }
+
+  .cas-suivant__lien:hover :global(.fleche) {
+    transform: translateX(0.12em);
+  }
+
+  .cas-suivant__sous {
+    color: var(--c-texte-secondaire);
+  }
+
+  .cas-contact {
+    padding-bottom: var(--space-l);
+    font-size: var(--step--1);
+  }
+</style>

@@ -1,26 +1,401 @@
 ---
 import Base from '../layouts/Base.astro';
+import Bandeau from '../components/Bandeau.astro';
+import Estampille from '../components/Estampille.astro';
+import Echantillons from '../components/Echantillons.astro';
+import Souligne from '../components/Souligne.astro';
+import CarteProjet from '../components/CarteProjet.astro';
+import Fleche from '../components/Fleche.astro';
+import ACompleter from '../components/ACompleter.astro';
+import { projetsTries } from '../lib/projets';
 import { url } from '../lib/url';
+import { studio } from '../config';
+
+const projets = (await projetsTries()).filter((p) => p.data.accueil);
+
+const motsCles = [
+  'identité de marque',
+  'direction artistique',
+  'webdesign',
+  'UX/UI',
+  'print',
+  'packaging',
+  'charte graphique',
+  'univers visuel',
+];
+
+const services = [
+  { id: 'branding', nom: 'Branding', phrase: 'Une marque qui inspire confiance, en création ou en refonte.' },
+  {
+    id: 'webdesign',
+    nom: 'Webdesign',
+    phrase: 'Un site à la hauteur de votre activité, qui transforme les visiteurs en clients.',
+  },
+  {
+    id: 'print',
+    nom: 'Print',
+    phrase: 'Un support ponctuel ou une identité à décliner, livrés en fichiers prêts à imprimer.',
+  },
+];
+
+const adresse = new URL(url('/'), Astro.site).href;
+const donnees = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${adresse}#clara`,
+      name: studio.personne,
+      jobTitle: studio.metier,
+      url: adresse,
+      sameAs: studio.linkedin ? [studio.linkedin] : undefined,
+      knowsAbout: ['Identité de marque', 'Direction artistique', 'Webdesign', 'UX/UI', 'Print', 'Packaging'],
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${adresse}#studio`,
+      name: studio.nom,
+      url: adresse,
+      description: 'Studio de graphisme : identité de marque, webdesign et supports imprimés.',
+      founder: { '@id': `${adresse}#clara` },
+      email: studio.email ?? undefined,
+      address: studio.ville ? { '@type': 'PostalAddress', addressLocality: studio.ville, addressCountry: 'FR' } : undefined,
+    },
+  ],
+};
 ---
 
 <Base
-  titre="Studio Joséphine — site en construction"
-  description="Studio Joséphine, graphiste et webdesigner indépendante : branding, webdesign, print."
-  indexer={false}
+  titre="Studio Joséphine — Clara Audureau, graphiste et webdesigner indépendante"
+  titreComplet
+  description="Studio Joséphine, le studio de Clara Audureau, graphiste et webdesigner indépendante : identité de marque, sites web et supports imprimés."
+  donneesStructurees={donnees}
 >
-  <div class="conteneur attente">
-    <h1>Site en construction</h1>
-    <p class="mesure">
-      L’accueil arrive à l’étape&nbsp;2. En attendant, les fondations graphiques sont sur le
-      <a href={url('/guide-de-styles/')}>guide de styles</a>.
+  <!-- Premier écran -->
+  <section class="conteneur grille hero" aria-labelledby="hero-titre">
+    <p class="surtitre hero__qui">Clara Audureau · graphiste et webdesigner indépendante</p>
+    <h1 id="hero-titre" class="hero__titre">
+      Je conçois des expériences graphiques où <Souligne couleur="rose" trace={1}>esthétique</Souligne>, <Souligne
+        couleur="anis"
+        trace={2}>simplicité</Souligne
+      > et <Souligne couleur="corail" trace={3}>fonctionnalité</Souligne> se rencontrent.
+    </h1>
+    <ul class="hero__disciplines" aria-label="Mes disciplines">
+      {
+        services.map((s, i) => (
+          <li>
+            <a href={url(`/services/#${s.id}`)}>
+              <span class="numero">{`0${i + 1}`}</span>
+              <span class="hero__discipline">{s.nom}</span>
+              <span class={`pastille pastille--${s.id}`} aria-hidden="true" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="hero__visuel" aria-hidden="true">
+      <Echantillons />
+      <div class="hero__estampille">
+        <Estampille angle={-11} taille="100%" graine={3} />
+      </div>
+    </div>
+  </section>
+
+  <Bandeau mots={motsCles} label="Mots-clés de mon travail" />
+
+  <!-- Projets phares -->
+  <section class="conteneur grille section accueil-projets" aria-labelledby="projets-titre">
+    <header class="marge tete">
+      <span class="numero" aria-hidden="true">01</span>
+      <h2 id="projets-titre">Projets</h2>
+    </header>
+    <div class="liste-projets">
+      {projets.map((projet, i) => <CarteProjet projet={projet} index={i} />)}
+    </div>
+    <p class="accueil-projets__tous">
+      <a class="lien-fleche" href={url('/projets/')}>Tous les projets <Fleche /></a>
     </p>
-  </div>
+  </section>
+
+  <!-- Services en bref -->
+  <section class="conteneur grille section" aria-labelledby="services-titre">
+    <header class="marge tete">
+      <span class="numero" aria-hidden="true">02</span>
+      <h2 id="services-titre">Services</h2>
+    </header>
+    <div class="corps">
+      <ul class="services-bref">
+        {
+          services.map((s) => (
+            <li>
+              <h3>
+                <span class={`pastille pastille--${s.id}`} aria-hidden="true" />
+                {s.nom}
+              </h3>
+              <p>{s.phrase}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="services-bref__lien">
+        <a class="lien-fleche" href={url('/services/')}>Comment je travaille <Fleche /></a>
+      </p>
+    </div>
+  </section>
+
+  <!-- À propos -->
+  <section id="a-propos" class="conteneur grille section" aria-labelledby="a-propos-titre">
+    <header class="marge tete">
+      <span class="numero" aria-hidden="true">03</span>
+      <h2 id="a-propos-titre">À propos</h2>
+    </header>
+    <div class="corps apropos">
+      <p class="apropos__accroche">Moi, c’est Clara.</p>
+      <div class="prose prose--grande apropos__texte">
+        <p>
+          J’ai cinq ans d’expérience, acquise chez Althode sur les marques Ehop! et Apimani. J’accompagne
+          aujourd’hui des entreprises sur leur identité de marque, leur site et leurs supports imprimés.
+        </p>
+        <p>
+          J’accorde une attention particulière aux projets qui portent des valeurs sociales, environnementales ou
+          humaines, en y apportant une approche créative, sensible et cohérente.
+        </p>
+        <p>
+          Ce qui m’anime&nbsp;: découvrir de nouveaux univers, comprendre les problématiques propres à chaque
+          secteur et imaginer des solutions graphiques qui ont du sens.
+        </p>
+      </div>
+      <dl class="apropos__infos">
+        <div>
+          <dt>Mes outils</dt>
+          <dd>Illustrator, Photoshop, InDesign, Figma</dd>
+        </div>
+        <div>
+          <dt>Mon parcours</dt>
+          <dd>
+            {studio.linkedin ? <a href={studio.linkedin}>Mon profil LinkedIn</a> : <ACompleter quoi="lien LinkedIn" />}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Appel au contact -->
+  <section class="conteneur grille appel" aria-labelledby="appel-titre">
+    <h2 id="appel-titre">Parlons de votre projet</h2>
+    <p>
+      Une identité à créer, un site à repenser, un support à imprimer&nbsp;: décrivez-moi votre besoin, je vous réponds
+      avec une proposition adaptée. Vous recrutez&nbsp;? Écrivez-moi aussi.
+    </p>
+    <div class="appel__actions">
+      <a class="bouton" href={url('/contact/')}>Décrire mon projet <Fleche /></a>
+    </div>
+  </section>
 </Base>
 
 <style>
-  .attente {
+  /* Premier écran */
+  .hero {
+    row-gap: var(--space-m);
+    padding-block: var(--space-l) var(--space-xl);
+  }
+
+  /* Placement explicite de chaque élément (une règle « .hero > * » prendrait le pas, une fois scopée) */
+  .hero__qui,
+  .hero__titre {
+    grid-column: 1 / -1;
+  }
+
+  .hero__titre {
+    font-size: clamp(2rem, 1.2rem + 4.2vw, 4.6rem);
+    font-weight: 250;
+    line-height: 1.07;
+    letter-spacing: -0.028em;
+  }
+
+  .hero__disciplines {
+    grid-column: 1 / 8;
+    align-self: end;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero__disciplines li + li {
+    border-top: var(--filet);
+  }
+
+  .hero__disciplines a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7em;
+    min-height: var(--cible-min);
+    padding-block: 0.35em;
+    text-decoration-line: none;
+  }
+
+  .hero__disciplines .pastille {
+    align-self: center;
+  }
+
+  .hero__discipline {
+    font-family: var(--font-titres);
+    font-size: var(--step-2);
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  .hero__disciplines a:hover .hero__discipline {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .hero__visuel {
+    position: relative;
+    grid-column: 8 / 13;
+    align-self: end;
+    padding-top: 12%;
+  }
+
+  .hero__estampille {
+    position: absolute;
+    top: 0;
+    right: -6%;
+    width: 52%;
+  }
+
+  @media (min-width: 64em) {
+    .hero {
+      grid-template-rows: auto auto 1fr;
+      row-gap: var(--space-l);
+      padding-block: var(--space-xl) var(--space-2xl);
+    }
+
+    .hero__qui {
+      grid-column: 1 / 9;
+      grid-row: 1;
+    }
+
+    .hero__titre {
+      grid-column: 1 / 10;
+      grid-row: 2;
+    }
+
+    .hero__disciplines {
+      grid-column: 1 / 10;
+      grid-row: 3;
+      display: flex;
+      gap: var(--space-xl);
+      padding-top: var(--space-s);
+      border-top: var(--filet);
+    }
+
+    .hero__disciplines li + li {
+      border-top: 0;
+    }
+
+    .hero__visuel {
+      grid-column: 10 / 13;
+      grid-row: 1 / 4;
+      align-self: center;
+    }
+  }
+
+  /* Projets */
+  .accueil-projets .liste-projets {
+    margin-top: var(--space-m);
+  }
+
+  .accueil-projets__tous {
+    font-size: var(--step-1);
+  }
+
+  @media (min-width: 64em) {
+    .accueil-projets__tous {
+      grid-column: 2 / -1;
+    }
+  }
+
+  /* Services en bref : une liste éditoriale, pas des cartes */
+  .services-bref {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .services-bref li {
     display: grid;
-    gap: var(--space-m);
-    padding-block: var(--space-2xl);
+    gap: var(--space-2xs) var(--gouttiere);
+    padding-block: var(--space-m);
+    border-top: var(--filet);
+  }
+
+  .services-bref li:last-child {
+    border-bottom: var(--filet);
+  }
+
+  .services-bref h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    font-size: var(--step-3);
+    font-weight: 300;
+    line-height: 1.1;
+  }
+
+  .services-bref h3 .pastille {
+    width: 0.32em;
+    height: 0.3em;
+  }
+
+  .services-bref p {
+    max-inline-size: 40ch;
+  }
+
+  .services-bref__lien {
+    margin-top: var(--space-m);
+  }
+
+  @media (min-width: 48em) {
+    .services-bref li {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      align-items: baseline;
+    }
+  }
+
+  /* À propos */
+  .apropos {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .apropos__accroche {
+    font-family: var(--font-titres);
+    font-size: var(--step-5);
+    font-weight: 250;
+    line-height: var(--leading-serre);
+    letter-spacing: -0.025em;
+  }
+
+  .apropos__infos {
+    display: grid;
+    max-inline-size: var(--mesure);
+    font-size: var(--step--1);
+  }
+
+  .apropos__infos div {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: var(--space-s);
+    padding-block: 0.7em;
+    border-top: var(--filet);
+  }
+
+  .apropos__infos dt {
+    font-weight: 500;
+  }
+
+  .apropos__infos dd {
+    margin: 0;
   }
 </style>

@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import Fleche from '../../components/Fleche.astro';
+import { url } from '../../lib/url';
+---
+
+<Base titre="Demande envoyée" description="Votre demande est bien partie." indexer={false}>
+  <section class="conteneur grille page-tete merci">
+    <h1>Merci, votre demande est partie</h1>
+    <p class="chapeau">
+      Je la lis et je vous réponds par email. Pour une identité, un site ou un support imprimé, nous commençons par un
+      premier échange&nbsp;; je vous envoie ensuite une proposition chiffrée, définie à l’avance.
+    </p>
+    <p class="merci__liens">
+      <a class="bouton bouton--secondaire" href={url('/projets/')}>Voir les projets <Fleche /></a>
+      <a class="lien-fleche" href={url('/')}>Retour à l’accueil</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .merci__liens {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+  }
+
+  @media (min-width: 64em) {
+    .merci__liens {
+      grid-column: 5 / 12;
+    }
+  }
+</style>

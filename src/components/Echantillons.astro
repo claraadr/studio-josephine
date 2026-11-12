@@ -1,0 +1,70 @@
+---
+/**
+ * Élément visuel du premier écran : deux échantillons de tissu, lin et vichy rose,
+ * aux bords crantés comme coupés aux ciseaux de couturière. Décor seul, sans texte.
+ */
+
+// Contour cranté d'un rectangle : une dent tous les `pas` unités, de profondeur `prof`.
+function cranter(x: number, y: number, l: number, h: number, pas = 7, prof = 3) {
+  const points: number[][] = [];
+  const cote = (x1: number, y1: number, x2: number, y2: number, nx: number, ny: number) => {
+    const n = Math.max(2, Math.round(Math.hypot(x2 - x1, y2 - y1) / pas));
+    for (let i = 0; i < n; i++) {
+      const t = i / n;
+      const d = i % 2 ? prof : 0;
+      points.push([x1 + (x2 - x1) * t + nx * d, y1 + (y2 - y1) * t + ny * d]);
+    }
+  };
+  cote(x, y, x + l, y, 0, -1);
+  cote(x + l, y, x + l, y + h, 1, 0);
+  cote(x + l, y + h, x, y + h, 0, 1);
+  cote(x, y + h, x, y, -1, 0);
+  return `M${points.map(([px, py]) => `${px.toFixed(1)} ${py.toFixed(1)}`).join(' L')}Z`;
+}
+
+const lin = cranter(62, 18, 214, 286);
+const vichy = cranter(14, 222, 156, 150);
+---
+
+<svg class="echantillons" viewBox="0 0 300 390" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="echantillon-vichy" width="12" height="12" patternUnits="userSpaceOnUse">
+      <rect width="12" height="12" class="e-fond"></rect>
+      <rect width="6" height="12" class="e-rose"></rect>
+      <rect width="12" height="6" class="e-rose"></rect>
+    </pattern>
+    <filter id="echantillon-grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9 0.045" numOctaves="2" seed="4" result="h"></feTurbulence>
+      <feColorMatrix in="h" values="0 0 0 0 0.35  0 0 0 0 0.05  0 0 0 0 0.14  0 0 0 0.32 -0.12" result="hc"></feColorMatrix>
+      <feTurbulence type="fractalNoise" baseFrequency="0.045 0.9" numOctaves="2" seed="9" result="v"></feTurbulence>
+      <feColorMatrix in="v" values="0 0 0 0 0.35  0 0 0 0 0.05  0 0 0 0 0.14  0 0 0 0.26 -0.1" result="vc"></feColorMatrix>
+      <feMerge result="fibres"><feMergeNode in="hc"></feMergeNode><feMergeNode in="vc"></feMergeNode></feMerge>
+      <feComposite in="fibres" in2="SourceGraphic" operator="in" result="tissage"></feComposite>
+      <feMerge><feMergeNode in="SourceGraphic"></feMergeNode><feMergeNode in="tissage"></feMergeNode></feMerge>
+    </filter>
+  </defs>
+  <path d={lin} class="e-lin" transform="rotate(-4 169 161)" filter="url(#echantillon-grain)"></path>
+  <path d={vichy} fill="url(#echantillon-vichy)" transform="rotate(7 92 297)"></path>
+</svg>
+
+<style>
+  .echantillons {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .e-lin {
+    fill: color-mix(in srgb, var(--c-bordeaux) 6%, var(--c-lin));
+  }
+
+  .e-fond {
+    fill: var(--c-lin);
+  }
+
+  .e-rose {
+    fill: var(--c-rose);
+    fill-opacity: 0.75;
+  }
+</style>

@@ -23,6 +23,14 @@
 
 @font-face {
   font-family: 'Poppins';
+  src: url('/fonts/poppins-italic-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
   src: url('/fonts/poppins-medium-latin.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
