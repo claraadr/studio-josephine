@@ -21,7 +21,7 @@ const nombre = (famille: string) => projets.filter((p) => p.data.familles.includ
 
   <div class="conteneur">
     <!-- Filtre : affiché seulement si JavaScript est actif ; sinon tous les projets restent visibles -->
-    <div class="filtres" hidden>
+    <div class="filtres">
       <div class="filtres__boutons" role="group" aria-label="Filtrer les projets par famille">
         <button type="button" class="filtre" data-famille="" aria-pressed="true">
           <svg class="filtre__coche" viewBox="0 0 14 12" aria-hidden="true" focusable="false"><path d="M1.5 6.6c1.4 1.2 2.6 2.4 3.6 3.7C7.4 6.8 9.9 3.9 12.6 1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -83,7 +83,6 @@ const nombre = (famille: string) => projets.filter((p) => p.data.familles.includ
       window.history.replaceState(null, '', adresse);
     };
 
-    zone.hidden = false;
     for (const b of boutons) b.addEventListener('click', () => appliquer(b.dataset.famille ?? ''));
     const demandee = new URL(window.location.href).searchParams.get('famille');
     if (demandee && boutons.some((b) => b.dataset.famille === demandee)) appliquer(demandee, false);
@@ -91,7 +90,12 @@ const nombre = (famille: string) => projets.filter((p) => p.data.familles.includ
 </script>
 
 <style>
+  /* Visible dès le premier affichage quand JavaScript est actif (classe « js »), pour ne rien décaler */
   .filtres {
+    display: none;
+  }
+
+  :global(.js) .filtres {
     display: flex;
     flex-wrap: wrap;
     align-items: center;

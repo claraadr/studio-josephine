@@ -67,9 +67,8 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
 
       <fieldset class="choix" id="objet">
         <legend>Objet de la demande</legend>
-        <p class="erreur" id="objet-erreur" hidden></p>
         {
-          objets.map((o, i) => (
+          objets.map((o) => (
             <label class="choix__option">
               <input
                 type="radio"
@@ -82,6 +81,7 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
             </label>
           ))
         }
+        <p class="erreur" id="objet-erreur" hidden></p>
       </fieldset>
 
       <fieldset class="choix choix--secondaire" id="creation-ou-refonte">
@@ -193,7 +193,7 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
         verifier: () => {
           const v = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
           if (!v) return 'Indiquez votre adresse email, pour que je puisse vous répondre.';
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Cette adresse email semble incomplète. Exemple : prenom@domaine.fr';
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Cette adresse email semble incomplète. Exemple\u00a0: prenom@domaine.fr';
           return null;
         },
       },
@@ -224,10 +224,13 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
       }
     };
 
-    // Une erreur corrigée disparaît dès que le champ est rempli
+    // Une erreur corrigée disparaît pendant la saisie, dès que le champ est valide
+    // (pas à la sortie du champ : la page bougerait sous le clic suivant).
     for (const r of regles) {
-      form.querySelector(`#${r.id}`)?.addEventListener('change', () => {
-        if (!form.querySelector<HTMLElement>(`#${r.id}-erreur`)?.hidden) afficher(r.id, r.verifier());
+      const evenement = r.id === 'objet' ? 'change' : 'input';
+      form.querySelector(`#${r.id}`)?.addEventListener(evenement, () => {
+        if (form.querySelector<HTMLElement>(`#${r.id}-erreur`)?.hidden) return;
+        if (r.verifier() === null) afficher(r.id, null);
       });
     }
 
