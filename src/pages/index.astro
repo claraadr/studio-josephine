@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { url } from '../lib/url';
 ---
 
 <Base
@@ -11,7 +12,7 @@ import Base from '../layouts/Base.astro';
     <h1>Site en construction</h1>
     <p class="mesure">
       L’accueil arrive à l’étape&nbsp;2. En attendant, les fondations graphiques sont sur le
-      <a href="/guide-de-styles/">guide de styles</a>.
+      <a href={url('/guide-de-styles/')}>guide de styles</a>.
     </p>
   </div>
 </Base>

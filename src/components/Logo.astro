@@ -6,6 +6,8 @@
  * avec fill="currentColor", role="img" et aria-label="Studio Joséphine".
  * Ce composant ne redessine pas le logo : il réserve sa place aux bonnes proportions (4 : 1).
  */
+import { url } from '../lib/url';
+
 interface Props {
   lien?: boolean;
   largeur?: string;
@@ -16,7 +18,7 @@ const Balise = lien ? 'a' : 'span';
 
 <Balise
   class="logo"
-  href={lien ? '/' : undefined}
+  href={lien ? url('/') : undefined}
   style={`--largeur-logo: ${largeur}`}
   data-substitut="logo"
 >

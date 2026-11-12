@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
+import { url } from '../lib/url';
 
 interface Props {
   titre: string;
@@ -19,8 +20,8 @@ const { titre, description, indexer = true } = Astro.props;
     <title>{titre}</title>
     <meta name="description" content={description} />
     {!indexer && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="preload" href="/fonts/readex-pro-var-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/poppins-regular-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/readex-pro-var-latin.woff2')} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={url('/fonts/poppins-regular-latin.woff2')} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#f3eee6" />
   </head>
   <body>
