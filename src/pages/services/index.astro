@@ -1,0 +1,339 @@
+---
+import Base from '../../layouts/Base.astro';
+import Fleche from '../../components/Fleche.astro';
+import { projetsTries, type Famille } from '../../lib/projets';
+import { url } from '../../lib/url';
+import { typo } from '../../lib/typographie.mjs';
+
+const projets = await projetsTries();
+const projetsDe = (famille: Famille) => projets.filter((p) => p.data.familles.includes(famille));
+
+interface Pole {
+  id: Famille;
+  nom: string;
+  paroles: string[]; // ce que dit le client
+  paroleEstUnBesoin?: boolean;
+  promesse?: string;
+  travail: string[];
+  note?: string;
+}
+
+const poles: Pole[] = [
+  {
+    id: 'branding',
+    nom: 'Branding',
+    paroles: [
+      'Je démarre, je fais mes visuels moi-même et ça fait amateur.',
+      'Mon logo date du lancement et ne me ressemble plus.',
+    ],
+    promesse: 'Une marque qui inspire confiance, en création ou en refonte.',
+    travail: [
+      'Brief',
+      'Atelier de marque',
+      'Moodboard',
+      'Deux pistes créatives',
+      'Logo et variantes',
+      'Couleurs et typographies',
+      'Charte graphique',
+      'Fichiers prêts pour le print et le web',
+      'Déclinaisons sur les supports du quotidien',
+    ],
+  },
+  {
+    id: 'webdesign',
+    nom: 'Webdesign',
+    paroles: ['Mon activité a évolué, mais mon site date du lancement et ne m’apporte pas de clients.'],
+    promesse: 'Un site à la hauteur de votre activité, qui transforme les visiteurs en clients.',
+    travail: [
+      'Audit de l’existant',
+      'Atelier sur les objectifs et les clients',
+      'Arborescence et wireframes',
+      'Maquettes sur mesure',
+      'Version mobile',
+      'Guide de styles',
+      'Suivi de l’intégration',
+    ],
+    note: 'Je conçois le site, un développeur partenaire l’intègre. Vous gardez un seul interlocuteur, du premier rendez-vous à la mise en ligne, en création comme en refonte.',
+  },
+  {
+    id: 'print',
+    nom: 'Print',
+    paroles: ['Un support ponctuel, ou une identité à décliner.'],
+    paroleEstUnBesoin: true,
+    travail: [
+      'Flyer',
+      'Affiche',
+      'Brochure',
+      'Plaquette',
+      'Catalogue',
+      'Packaging',
+      'Papeterie',
+      'Kakémono',
+      'Signalétique',
+    ],
+    note: 'Livrés en fichiers prêts à imprimer.',
+  },
+];
+
+const etapes = [
+  { nom: 'Échanger', detail: 'Brief et atelier' },
+  { nom: 'Explorer', detail: 'Moodboard et pistes' },
+  { nom: 'Concevoir', detail: 'La piste retenue prend forme' },
+  { nom: 'Livrer et accompagner', detail: 'Les fichiers finaux, et un suivi après la livraison' },
+];
+---
+
+<Base
+  titre="Services"
+  description="Branding, webdesign et print : créer ou refaire une identité de marque, concevoir un site qui vous ressemble, préparer vos supports imprimés."
+>
+  <header class="conteneur grille page-tete">
+    <h1>Services</h1>
+    <p class="chapeau">
+      Que vous lanciez votre activité, que votre image ne soit plus à la hauteur ou que vous ayez besoin d’un support
+      ponctuel, je vous accompagne du premier échange aux fichiers finaux.
+    </p>
+  </header>
+
+  {
+    poles.map((pole, i) => (
+      <section id={pole.id} class="conteneur grille section pole" aria-labelledby={`${pole.id}-titre`}>
+        <header class="marge tete tete--collante">
+          <span class="numero" aria-hidden="true">{`0${i + 1}`}</span>
+          <h2 id={`${pole.id}-titre`} class="pole__nom">
+            <span class={`pastille pastille--${pole.id}`} aria-hidden="true" />
+            {pole.nom}
+          </h2>
+        </header>
+        <div class="corps pole__corps">
+          <div class="pole__paroles">
+            {!pole.paroleEstUnBesoin && <p class="pole__qui">Vous vous dites peut-être</p>}
+            {pole.paroleEstUnBesoin && <p class="pole__qui">Le besoin</p>}
+            {pole.paroles.map((parole) =>
+              pole.paroleEstUnBesoin ? (
+                <p class="pole__parole">{typo(parole)}</p>
+              ) : (
+                <blockquote class="pole__parole">
+                  <p>{typo(`«${parole}»`)}</p>
+                </blockquote>
+              ),
+            )}
+          </div>
+          {pole.promesse && (
+            <p class="pole__promesse">
+              <span class="pole__qui">Ce que vous obtenez</span>
+              {typo(pole.promesse)}
+            </p>
+          )}
+          <div class="pole__travail">
+            <h3 class="pole__qui">Le travail comprend</h3>
+            <ul class="pole__liste">
+              {pole.travail.map((t) => (
+                <li>{typo(t)}</li>
+              ))}
+            </ul>
+            {pole.note && <p class="pole__note">{typo(pole.note)}</p>}
+          </div>
+          {projetsDe(pole.id).length > 0 && (
+            <p class="pole__projets">
+              <span class="pole__qui">À voir</span>
+              {projetsDe(pole.id).map((p, k, tous) => (
+                <>
+                  <a href={url(`/projets/${p.id}/`)}>{typo(p.data.titre)}</a>
+                  {k < tous.length - 1 ? ', ' : ''}
+                </>
+              ))}
+            </p>
+          )}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="conteneur grille section" aria-labelledby="deroulement-titre">
+    <header class="marge tete">
+      <span class="numero" aria-hidden="true">04</span>
+      <h2 id="deroulement-titre">Comment ça se passe</h2>
+    </header>
+    <ol class="corps etapes">
+      {
+        etapes.map((etape, i) => (
+          <li>
+            <span class="etapes__numero" aria-hidden="true">
+              {i + 1}
+            </span>
+            <span class="etapes__nom">{etape.nom}</span>
+            <span class="etapes__detail">{typo(etape.detail)}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="conteneur grille appel" aria-labelledby="appel-titre">
+    <h2 id="appel-titre">Parlons de votre projet</h2>
+    <p>Après un premier échange, je vous envoie une proposition chiffrée, définie à l’avance.</p>
+    <div class="appel__actions">
+      <a class="bouton" href={url('/contact/')}>Décrire mon projet <Fleche /></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pole__nom {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .pole__nom .pastille {
+    width: 0.34em;
+    height: 0.32em;
+  }
+
+  .pole__corps {
+    display: grid;
+    gap: var(--space-l);
+    align-content: start;
+  }
+
+  .pole__qui {
+    display: block;
+    margin-bottom: var(--space-2xs);
+    font-family: var(--font-texte);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .pole__paroles {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .pole__parole {
+    margin: 0;
+    max-inline-size: 30ch;
+    font-family: var(--font-titres);
+    font-size: var(--step-3);
+    font-weight: 250;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .pole__parole p {
+    margin: 0;
+  }
+
+  .pole__promesse {
+    max-inline-size: 36ch;
+    padding-left: var(--space-s);
+    border-left: 2px solid var(--c-bordeaux);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .pole__liste {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    column-gap: var(--gouttiere);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pole__liste li {
+    padding-block: 0.55em;
+    border-top: var(--filet);
+  }
+
+  .pole__note {
+    max-inline-size: var(--mesure);
+    margin-top: var(--space-s);
+  }
+
+  .pole__projets a {
+    font-weight: 500;
+  }
+
+  @media (min-width: 64em) {
+    .pole__corps {
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      column-gap: var(--gouttiere);
+    }
+
+    .pole__paroles {
+      grid-column: 1 / 8;
+    }
+
+    .pole__promesse {
+      grid-column: 4 / 10;
+    }
+
+    .pole__travail,
+    .pole__projets {
+      grid-column: 1 / 10;
+    }
+  }
+
+  /* Comment ça se passe : quatre temps, en frise */
+  .etapes {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+  }
+
+  .etapes li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: var(--space-s);
+    padding-block: var(--space-s);
+    border-top: var(--filet);
+  }
+
+  .etapes__numero {
+    grid-row: span 2;
+    font-family: var(--font-titres);
+    font-size: var(--step-4);
+    font-weight: 200;
+    line-height: 1;
+  }
+
+  .etapes__nom {
+    font-family: var(--font-titres);
+    font-size: var(--step-2);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .etapes__detail {
+    color: var(--c-texte-secondaire);
+  }
+
+  @media (min-width: 64em) {
+    .etapes {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: var(--gouttiere);
+    }
+
+    .etapes li {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-2xs);
+      align-content: start;
+    }
+
+    .etapes li:nth-child(2n) {
+      margin-top: var(--space-l);
+    }
+
+    .etapes__numero {
+      grid-row: auto;
+    }
+  }
+</style>

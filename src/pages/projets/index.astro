@@ -1,0 +1,150 @@
+---
+import Base from '../../layouts/Base.astro';
+import CarteProjet from '../../components/CarteProjet.astro';
+import { projetsTries, familles } from '../../lib/projets';
+
+const projets = await projetsTries();
+const nombre = (famille: string) => projets.filter((p) => p.data.familles.includes(famille as never)).length;
+---
+
+<Base
+  titre="Projets"
+  description="Les projets de Clara Audureau en identité de marque, webdesign et print : le besoin de départ, la démarche et le résultat."
+>
+  <header class="conteneur grille page-tete">
+    <h1>Projets</h1>
+    <p class="chapeau">
+      Identités de marque, sites et supports imprimés. Pour chaque projet, le besoin de départ et la démarche, pas
+      seulement le rendu.
+    </p>
+  </header>
+
+  <div class="conteneur">
+    <!-- Filtre : affiché seulement si JavaScript est actif ; sinon tous les projets restent visibles -->
+    <div class="filtres" hidden>
+      <div class="filtres__boutons" role="group" aria-label="Filtrer les projets par famille">
+        <button type="button" class="filtre" data-famille="" aria-pressed="true">
+          <svg class="filtre__coche" viewBox="0 0 14 12" aria-hidden="true" focusable="false"><path d="M1.5 6.6c1.4 1.2 2.6 2.4 3.6 3.7C7.4 6.8 9.9 3.9 12.6 1.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Tous <span class="filtre__nombre">{projets.length}</span>
+        </button>
+        {
+          familles.map((f) => (
+            <button type="button" class="filtre" data-famille={f.id} aria-pressed="false">
+              <svg class="filtre__coche" viewBox="0 0 14 12" aria-hidden="true" focusable="false">
+                <path
+                  d="M1.5 6.6c1.4 1.2 2.6 2.4 3.6 3.7C7.4 6.8 9.9 3.9 12.6 1.4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class={`pastille pastille--${f.id}`} aria-hidden="true" />
+              {f.nom} <span class="filtre__nombre">{nombre(f.id)}</span>
+            </button>
+          ))
+        }
+      </div>
+      <p class="filtres__etat legende" role="status"></p>
+    </div>
+
+    <div class="liste-projets" id="liste-projets">
+      {projets.map((projet, i) => <CarteProjet projet={projet} index={i} niveau="h2" />)}
+    </div>
+  </div>
+</Base>
+
+<script>
+  const zone = document.querySelector<HTMLElement>('.filtres');
+  const liste = document.getElementById('liste-projets');
+  if (zone && liste) {
+    const boutons = [...zone.querySelectorAll<HTMLButtonElement>('button[data-famille]')];
+    const cartes = [...liste.querySelectorAll<HTMLElement>('.carte')];
+    const etat = zone.querySelector('.filtres__etat');
+
+    const appliquer = (famille: string, annoncer = true) => {
+      let n = 0;
+      for (const carte of cartes) {
+        const visible = !famille || (carte.dataset.familles ?? '').split(' ').includes(famille);
+        carte.hidden = !visible;
+        if (visible) {
+          // Le rythme des formats repart de zéro sur les projets affichés
+          carte.classList.remove('carte--r1', 'carte--r2', 'carte--r3', 'carte--r4');
+          carte.classList.add(`carte--r${(n % 4) + 1}`);
+          n += 1;
+        }
+      }
+      for (const b of boutons) b.setAttribute('aria-pressed', String(b.dataset.famille === famille));
+      if (annoncer && etat) etat.textContent = n > 1 ? `${n} projets affichés` : `${n} projet affiché`;
+      const adresse = new URL(window.location.href);
+      if (famille) adresse.searchParams.set('famille', famille);
+      else adresse.searchParams.delete('famille');
+      window.history.replaceState(null, '', adresse);
+    };
+
+    zone.hidden = false;
+    for (const b of boutons) b.addEventListener('click', () => appliquer(b.dataset.famille ?? ''));
+    const demandee = new URL(window.location.href).searchParams.get('famille');
+    if (demandee && boutons.some((b) => b.dataset.famille === demandee)) appliquer(demandee, false);
+  }
+</script>
+
+<style>
+  .filtres {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+    padding-bottom: var(--space-xl);
+  }
+
+  .filtres__boutons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .filtre {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: var(--cible-min);
+    padding: 0.45em 1.05em;
+    border: 1px solid var(--c-bordeaux);
+    border-radius: var(--rayon-main);
+    background: transparent;
+    color: var(--c-bordeaux);
+    font: 500 var(--step--1) / 1.2 var(--font-texte);
+    cursor: pointer;
+  }
+
+  .filtre:hover {
+    background: color-mix(in srgb, var(--c-bordeaux) 6%, var(--c-lin));
+  }
+
+  .filtre__coche {
+    display: none;
+    width: 0.95em;
+    height: auto;
+  }
+
+  /* État actif : fond plein, coche et nombre en gras — pas seulement une couleur */
+  .filtre[aria-pressed='true'] {
+    background: var(--c-bordeaux);
+    color: var(--c-lin);
+  }
+
+  .filtre[aria-pressed='true'] .filtre__coche {
+    display: block;
+  }
+
+  .filtre[aria-pressed='true'] .filtre__nombre {
+    font-weight: 600;
+  }
+
+  .filtre__nombre {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Estampille from '../components/Estampille.astro';
+import Fleche from '../components/Fleche.astro';
+import { url } from '../lib/url';
+---
+
+<Base titre="Page introuvable" description="Cette page n’existe pas ou a changé d’adresse." indexer={false}>
+  <section class="conteneur grille page-tete introuvable">
+    <h1>Page introuvable</h1>
+    <p class="chapeau">Cette page n’existe pas, ou elle a changé d’adresse. Les projets, eux, sont toujours là.</p>
+    <p class="introuvable__liens">
+      <a class="bouton" href={url('/projets/')}>Voir les projets <Fleche /></a>
+      <a class="lien-fleche" href={url('/')}>Retour à l’accueil</a>
+    </p>
+    <div class="introuvable__estampille" aria-hidden="true">
+      <Estampille
+        forme="ovale"
+        accent="corail"
+        angle={8}
+        graine={8}
+        taille="clamp(10rem, 8rem + 8vw, 15rem)"
+        texte="Page introuvable"
+        texteBas="Studio Joséphine"
+      />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .introuvable__liens {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+  }
+
+  .introuvable__estampille {
+    justify-self: end;
+    padding-top: var(--space-m);
+  }
+
+  @media (min-width: 64em) {
+    .introuvable__liens {
+      grid-column: 5 / 12;
+    }
+
+    .introuvable__estampille {
+      grid-column: 1 / 5;
+      grid-row: 2 / 4;
+      justify-self: start;
+      align-self: center;
+    }
+  }
+</style>

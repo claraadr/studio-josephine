@@ -229,3 +229,51 @@
     gap: var(--space-3xl);
   }
 }
+
+/* ---------- Pages légales ---------- */
+
+.legal {
+  display: grid;
+  gap: var(--space-xl);
+  padding-bottom: var(--space-xl);
+}
+
+.legal section {
+  display: grid;
+  gap: var(--space-s);
+  max-inline-size: var(--mesure);
+  padding-top: var(--space-m);
+  border-top: var(--filet);
+}
+
+.legal h2 {
+  font-size: var(--step-2);
+  font-weight: 300;
+}
+
+.legal__fiche {
+  display: grid;
+  font-size: var(--step--1);
+}
+
+.legal__fiche div {
+  display: grid;
+  grid-template-columns: minmax(8rem, 13rem) 1fr;
+  gap: var(--space-s);
+  padding-block: 0.6em;
+  border-bottom: var(--filet);
+}
+
+.legal__fiche dt {
+  font-weight: 500;
+}
+
+.legal__fiche dd {
+  margin: 0;
+}
+
+@media (min-width: 64em) {
+  .legal {
+    padding-left: calc((100% + var(--gouttiere)) / 12 * 4);
+  }
+}

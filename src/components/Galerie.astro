@@ -22,7 +22,7 @@ const { format, images } = Astro.props;
 const ratios = { pleine: '16 / 9', paire: '4 / 5', triptyque: '3 / 4', detail: '1 / 1' };
 const tailles = {
   pleine: '(min-width: 92rem) 84rem, 92vw',
-  paire: '(min-width: 48em) 44vw, 92vw',
+  paire: '(min-width: 48em) 44vw, 46vw',
   triptyque: '(min-width: 48em) 29vw, 92vw',
   detail: '(min-width: 48em) 34vw, 80vw',
 };
@@ -64,14 +64,18 @@ const recadrer = format === 'paire' || format === 'triptyque';
     width: 100%;
   }
 
-  @media (min-width: 48em) {
-    .galerie--paire {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  /* Une paire reste côte à côte, même sur téléphone */
+  .galerie--paire {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
+  @media (min-width: 36em) {
     .galerie--triptyque {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+
+  @media (min-width: 48em) {
 
     /* Le détail : une image plus petite, décalée sur la grille */
     .galerie--detail {

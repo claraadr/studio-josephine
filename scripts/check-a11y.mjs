@@ -33,6 +33,7 @@ async function pages(dossier, base = '/') {
     const chemin = join(dossier, nom);
     if ((await stat(chemin)).isDirectory()) resultat.push(...(await pages(chemin, `${base}${nom}/`)));
     else if (nom === 'index.html') resultat.push(base);
+    else if (nom === '404.html' && base === '/') resultat.push('/404.html');
   }
   return resultat;
 }
