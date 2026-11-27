@@ -9,7 +9,7 @@ import Galerie from '../../components/Galerie.astro';
 import Cartouche from '../../components/Cartouche.astro';
 import Fleche from '../../components/Fleche.astro';
 import { projetsTries, nomFamille, autresDisciplines, numero, type Projet } from '../../lib/projets';
-import { typo, typoHtml } from '../../lib/typographie.mjs';
+import { typo, typoHtml, marquerACompleter, texteHtml } from '../../lib/typographie.mjs';
 import { url } from '../../lib/url';
 
 export async function getStaticPaths() {
@@ -34,7 +34,10 @@ const html = projet.rendered?.html ?? '';
 const morceaux = html.split(/<h2[^>]*>([\s\S]*?)<\/h2>/);
 const parties: { titre: string; html: string }[] = [];
 for (let i = 1; i < morceaux.length; i += 2) {
-  parties.push({ titre: morceaux[i].replace(/<[^>]+>/g, '').trim(), html: typoHtml(morceaux[i + 1].trim()) });
+  parties.push({
+    titre: morceaux[i].replace(/<[^>]+>/g, '').trim(),
+    html: marquerACompleter(typoHtml(morceaux[i + 1].trim())),
+  });
 }
 if (parties.map((p) => p.titre).join('|') !== PARTIES.join('|')) {
   throw new Error(
@@ -76,7 +79,7 @@ const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}
   <article class="cas">
     <header class="conteneur grille cas-tete">
       <p class="cas-retour">
-        <a class="lien-fleche" href={url('/projets/')}><Fleche sens="gauche" /> Tous les projets</a>
+        <a class="lien-fleche" href={url('/projets/')}><Fleche sens="gauche" /> Toutes les réalisations</a>
       </p>
       <h1 class="cas-titre">
         <span class="cas-titre__nom">{typo(d.titre)}</span>
@@ -174,7 +177,7 @@ const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}
     </section>
 
     <div class="conteneur grille cas-fin">
-      <p class="cas-conclusion">{typo(d.conclusion)}</p>
+      <p class="cas-conclusion" set:html={texteHtml(d.conclusion)} />
     </div>
 
     <nav class="conteneur cas-suivant" aria-label="Projet suivant">
@@ -214,16 +217,16 @@ const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}
   }
 
   .cas-titre__nom {
-    font-size: var(--step-6);
-    font-weight: 200;
+    font-size: clamp(2.5rem, 1.6rem + 3vw, 4rem);
+    font-weight: 700;
     line-height: var(--leading-serre);
-    letter-spacing: -0.03em;
+    letter-spacing: -0.015em;
   }
 
   .cas-titre__sous {
     max-inline-size: 26ch;
     font-size: var(--step-2);
-    font-weight: 300;
+    font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
@@ -309,7 +312,7 @@ const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}
   .cas-court h2 {
     margin-bottom: var(--space-2xs);
     font-size: var(--step-3);
-    font-weight: 300;
+    font-weight: 700;
   }
 
   @media (min-width: 64em) {
@@ -338,7 +341,7 @@ const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}
     grid-column: 1 / -1;
     font-family: var(--font-titres);
     font-size: var(--step-3);
-    font-weight: 300;
+    font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.015em;
     text-wrap: balance;
@@ -367,7 +370,7 @@ const description = typo(`Étude de cas : ${premiereLettre(d.resume)}. ${d.role}
     gap: 0.35em;
     font-family: var(--font-titres);
     font-size: var(--step-5);
-    font-weight: 250;
+    font-weight: 700;
     line-height: var(--leading-serre);
     letter-spacing: -0.025em;
   }

@@ -9,11 +9,13 @@
 interface Props {
   mots: string[];
   label?: string;
+  /** « plein » : bande bordeaux et capitales lin (maquette de l'accueil). */
+  variante?: 'filet' | 'plein';
 }
-const { mots, label = 'Savoir-faire' } = Astro.props;
+const { mots, label = 'Savoir-faire', variante = 'filet' } = Astro.props;
 ---
 
-<section class="bandeau" aria-label={label} data-pause="false">
+<section class:list={['bandeau', { 'bandeau--plein fond-fonce': variante === 'plein' }]} aria-label={label} data-pause="false">
   <button class="bandeau__pause" type="button" hidden>
     <span class="visually-hidden">Mettre le bandeau en pause</span>
     <svg class="icone-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false">

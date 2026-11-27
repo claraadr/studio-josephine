@@ -6,13 +6,27 @@ client: "Atelier Berlot"
 secteur: "Biscuiterie artisanale bio"
 annee:
 role: "Conception web, de la définition du besoin aux maquettes graphiques"
-familles: [webdesign]
-disciplines: ["Webdesign", "Gestion de projet"]
-ordre: 1
+familles: [webdesign, print]
+disciplines: ["Webdesign", "Gestion de projet", "Packaging"]
+ordre: 3
 accueil: true
 credits:
   - "Photographies du site : Atelier Berlot"
 conclusion: "Ce projet m’a permis d’intervenir sur l’ensemble de la conception web, du parcours utilisateur aux maquettes finales, tout en accompagnant la cliente dans le choix du prestataire chargé du développement du site."
+
+# Carte sur l’accueil
+accroche: "Biscuiterie artisanale bio et angevine"
+extrait: "Une biscuiterie bio qui passait autant de temps à emballer ses biscuits qu’à les préparer. J’ai créé les boîtes de sa gamme salée : une couleur par saveur, et un emballage beaucoup plus simple au quotidien."
+etiquettes: ["Packaging"]
+
+# Avis du client (section « Ces entreprises m’ont fait confiance »)
+logo: "./logo.png"
+avis:
+  # À remplacer par le vrai avis du client (texte provisoire de la maquette)
+  citation: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  nom: "Emmanuelle Moulié"
+  role: "Fondatrice"
+  ordre: 1
 
 # Couverture : déposez l’image dans ce dossier, puis retirez les # des trois lignes ci-dessous.
 # couverture:

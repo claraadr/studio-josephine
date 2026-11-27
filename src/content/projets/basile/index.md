@@ -8,8 +8,8 @@ annee:
 role: "Cheffe de projet en binôme et designer UX/UI"
 familles: [branding, webdesign]
 disciplines: ["Direction artistique", "UX/UI Design", "Gestion de projet"]
-ordre: 4
-accueil: true
+ordre: 5
+accueil: false
 mention: "Projet de fin d’études · startup fictive · équipe de cinq"
 credits:
   - "Projet mené en équipe de cinq profils : développement, marketing, data et design"

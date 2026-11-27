@@ -1,0 +1,86 @@
+---
+import Base from '../../layouts/Base.astro';
+import ACompleter from '../../components/ACompleter.astro';
+import { studio } from '../../config';
+import { url } from '../../lib/url';
+---
+
+<Base
+  titre="À propos"
+  description="Clara Audureau, graphiste et webdesigner freelance à Angers : son parcours, ce qui l’anime et ses outils."
+>
+  <header class="conteneur grille page-tete">
+    <h1>À propos</h1>
+    <p class="chapeau">Moi, c’est Clara.</p>
+  </header>
+
+  <section class="conteneur grille section" aria-labelledby="parcours">
+    <header class="marge tete">
+      <h2 id="parcours">Mon parcours</h2>
+    </header>
+    <div class="corps apropos">
+      <div class="prose prose--grande">
+        <p>
+          J’ai cinq ans d’expérience, acquise chez Althode sur les marques Ehop! et Apimani. J’accompagne aujourd’hui
+          des entreprises sur leur identité de marque, leur site et leurs supports imprimés.
+        </p>
+        <p>
+          J’accorde une attention particulière aux projets qui portent des valeurs sociales, environnementales ou
+          humaines, en y apportant une approche créative, sensible et cohérente.
+        </p>
+        <p>
+          Ce qui m’anime&nbsp;: découvrir de nouveaux univers, comprendre les problématiques propres à chaque secteur
+          et imaginer des solutions graphiques qui ont du sens.
+        </p>
+      </div>
+      <dl class="apropos__infos">
+        <div>
+          <dt>Mes outils</dt>
+          <dd>Illustrator, Photoshop, InDesign, Figma</dd>
+        </div>
+        <div>
+          <dt>Mon parcours</dt>
+          <dd>
+            {studio.linkedin ? <a href={studio.linkedin}>Mon profil LinkedIn</a> : <ACompleter quoi="lien LinkedIn" />}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="conteneur grille appel" aria-labelledby="appel-titre">
+    <h2 id="appel-titre">Un projet en tête&nbsp;?</h2>
+    <p>Racontez-moi votre activité et vos envies&nbsp;: je vous réponds avec une proposition adaptée.</p>
+    <div class="appel__actions">
+      <a class="bouton" href={url('/contact/')}>On en parle&nbsp;?</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .apropos {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .apropos__infos {
+    display: grid;
+    max-inline-size: var(--mesure);
+  }
+
+  .apropos__infos div {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: var(--space-s);
+    padding-block: 0.7em;
+    border-top: var(--filet);
+  }
+
+  .apropos__infos dt {
+    font-weight: 600;
+  }
+
+  .apropos__infos dd {
+    margin: 0;
+  }
+</style>

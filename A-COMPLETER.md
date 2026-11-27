@@ -3,25 +3,31 @@
 Ce que le site attend encore. Sur les pages, chaque information manquante est signalée en rose
 « [À COMPLÉTER : …] ». Les visuels manquants sont remplacés par des aplats légendés aux bons formats.
 
-## Fichiers de Clara
+## Textes et visuels de Clara
 
-- [ ] **Logo** (SVG, une couleur) → `ressources-clara/logo/`, puis intégré dans `src/components/Logo.astro`,
-      où un substitut en texte occupe sa place. Ensuite : refaire l'image de partage (`npm run image:partage`)
-      et l'icône d'onglet `public/favicon.svg` (version réduite : le « j » et son point, à valider).
-- [ ] **Visuels des quatre projets** : une couverture et 6 à 12 images par projet (2400 px de large au minimum,
-      JPG ou PNG en sRGB), chacune avec un texte alternatif. Mode d'emploi : README, « Ajouter un projet ».
+- [ ] **Avis des clients** : les quatre avis de l'accueil affichent encore le faux texte de la maquette
+      (« Lorem ipsum… »), comme demandé. À remplacer dans chaque fiche projet (`avis: citation:`) :
+      Emmanuelle Moulié (Atelier Berlot), Alexis Godicheau (Apimani), Medhy Lepoureau (Camping du Futur),
+      Thomas Jean (Ehop!).
+- [ ] **Camping du Futur** : l'étude de cas est à écrire (Contexte, Objectif, Processus, Résultat, phrase de fin),
+      dans `src/content/projets/camping-du-futur/index.md`.
+- [ ] **Atelier Berlot** : sur l'accueil, la carte présente le packaging (les boîtes de la gamme salée, d'après la
+      maquette) ; l'étude de cas raconte toujours la création du site. Textes et visuels du packaging à fournir.
+- [ ] **Visuels du premier écran** : cinq emplacements d'images autour de la phrase d'accueil.
+- [ ] **Visuels des projets** : une couverture et 6 à 12 images par projet (2400 px de large au minimum, JPG ou PNG
+      en sRGB), chacune avec un texte alternatif. Mode d'emploi : README, « Ajouter un projet ».
+- [ ] **Logos des clients** : ceux d'Atelier Berlot et de Camping du Futur sont des images extraites de la maquette ;
+      leurs fichiers SVG d'origine, si Clara les a, seront plus nets.
 - [ ] Année de chaque projet (facultatif : affichée dans la fiche si elle est connue).
-- [ ] Portrait (facultatif) pour la section À propos.
-- [ ] Textures lin et vichy personnelles (facultatif : des versions dessinées en CSS et SVG sont en place).
+- [ ] Portrait (facultatif) pour la page À propos.
 
 ## Informations à saisir dans `src/config.ts`
 
-- [ ] Adresse email : pied de page, Contact, mentions légales, confidentialité, destinataire de l'email prérempli.
 - [ ] Lien LinkedIn : pied de page, Contact, À propos.
 - [ ] Statut juridique, SIRET, adresse professionnelle : mentions légales.
 - [ ] Durée de conservation des demandes reçues : confidentialité (pour des prospects, la CNIL retient souvent
       trois ans après le dernier échange ; à confirmer).
-- [ ] Ville (facultatif) : données structurées pour les moteurs de recherche.
+- [ ] Vérifier que l'adresse hello@studio-josephine.fr (reprise de la maquette) reçoit bien les messages.
 
 ## À décider (Lucas)
 
@@ -32,24 +38,20 @@ Ce que le site attend encore. Sur les pages, chaque information manquante est si
 
 ## À valider (Clara)
 
-- [ ] Le guide de styles (`/guide-de-styles/`) : couleurs par famille, cartouches, estampilles, textures.
-- [ ] L'élément visuel du premier écran : échantillons de lin et de vichy, avec l'estampille.
-- [ ] Les trois estampilles du site : accueil, pied de page, page introuvable.
-- [ ] La répartition de ses textes entre Contexte, Objectif, Processus et Résultat (sans ajout ni coupure).
-- [ ] Les familles de chaque projet, qui pilotent le filtre : Atelier Berlot (Webdesign), Ehop! (Branding,
-      Webdesign, Print), Apimani (Webdesign, Print), Basile (Branding, Webdesign).
-- [ ] Les fiches projets : secteurs et rôles rédigés à partir de ses textes ; crédit « Photographies du site :
-      Atelier Berlot ».
-- [ ] Les textes de liaison écrits pour le site : accroches de l'accueil et des services, déroulé « Comment ça se
-      passe », formulaire, confirmation, page introuvable, pages légales.
-- [ ] Relecture : dans le texte d'Atelier Berlot, « tout en » revient deux fois dans la même phrase
-      (« tout en facilitant la prise de contact, tout en respectant le budget annoncé »). Laissé tel quel,
-      le brief demandant de ne rien modifier.
+- [ ] L'icône d'onglet : le « j » du logo et son point, sur une pastille lin.
+- [ ] Les adaptations de la maquette pour l'accessibilité : bouton pause sur le bandeau, liens Mentions légales et
+      Confidentialité ajoutés en bas du pied de page, flèches du carrousel en 44 px (taille tactile minimale).
+- [ ] L'ombre légère sous les cartes empilées, ajoutée pour que l'empilement se lise (cartes lin sur lin).
+- [ ] Les textes de la maquette passés au vouvoiement, et « m'ont fait confiance » (sans « faites »).
+- [ ] La répartition des textes de projets entre Contexte, Objectif, Processus et Résultat (sans ajout ni coupure).
+- [ ] Relecture : dans le texte d'Atelier Berlot, « tout en » revient deux fois dans la même phrase.
 
-## Écarts signalés
+## Écarts avec le brief, d'après la maquette
 
-- Readex Pro vient du dépôt officiel Google Fonts (même police, licence OFL), en attendant le fichier TTF de
-  Clara. À remplacer si son fichier diffère.
-- Poppins Italique (400) est chargée pour un seul usage : l'ancien nom « J'aime mes dents ! », en italique dans
-  le texte de Clara. Le fichier n'est téléchargé que sur la page Apimani.
-- L'hébergeur indiqué dans les mentions légales est GitHub (GitHub Pages) : à modifier si l'hébergement change.
+- Accueil centré avec deux boutons, prix affichés (accueil et Services), fonds de section en couleur, avis clients :
+  repris de la maquette, qui prime sur le brief.
+- Texte courant en DM Sans (au lieu de Poppins) et corail #E67155 (au lieu de #DE6D52), comme dans la maquette.
+  Ce corail porte le texte bordeaux à 4,55 : 1, au-dessus du seuil AA.
+- Couleurs des familles : Branding en anis, Webdesign en corail, Print et Packaging en rose.
+- Readex Pro vient du dépôt officiel Google Fonts (même police, licence OFL).
+- L'hébergeur indiqué dans les mentions légales est GitHub (GitHub Pages).

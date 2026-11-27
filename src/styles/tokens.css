@@ -14,34 +14,18 @@
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('/fonts/poppins-regular-latin.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
+  font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('/fonts/poppins-italic-latin.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans-italic-latin.woff2') format('woff2');
+  font-weight: 400 700;
   font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Poppins';
-  src: url('/fonts/poppins-medium-latin.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Poppins';
-  src: url('/fonts/poppins-semibold-latin.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
   font-display: swap;
 }
 
@@ -51,7 +35,7 @@
   --c-bordeaux: #590d23;
   --c-rose: #efc7db;
   --c-anis: #cfc56e;
-  --c-corail: #de6d52;
+  --c-corail: #e67155; /* valeur de la maquette de Clara : bordeaux dessus = 4,55 : 1 */
   --c-blanc: #ffffff;
 
   /* Rôles */
@@ -62,19 +46,19 @@
   --c-filet: rgb(89 13 35 / 0.22);
   --c-filet-fort: var(--c-bordeaux);
 
-  /* Familles de projets (proposition, Clara tranche) */
-  --c-branding: var(--c-rose);
-  --c-webdesign: var(--c-anis);
-  --c-print: var(--c-corail); /* décor seulement : pastille, jamais fond de texte */
+  /* Familles de projets, d'après la maquette de l'accueil */
+  --c-branding: var(--c-anis);
+  --c-webdesign: var(--c-corail);
+  --c-print: var(--c-rose);
 
   /* Typographies — aucune autre police */
   --font-titres: 'Readex Pro', sans-serif;
-  --font-texte: 'Poppins', sans-serif;
+  --font-texte: 'DM Sans', sans-serif;
 
   /* Échelle typographique fluide (360 px → 1600 px) */
   --step--2: clamp(0.75rem, 0.73rem + 0.08vw, 0.8rem);
   --step--1: clamp(0.84rem, 0.81rem + 0.12vw, 0.9rem);
-  --step-0: clamp(1rem, 0.97rem + 0.16vw, 1.1rem);
+  --step-0: 1rem;
   --step-1: clamp(1.2rem, 1.13rem + 0.33vw, 1.45rem);
   --step-2: clamp(1.44rem, 1.3rem + 0.62vw, 1.95rem);
   --step-3: clamp(1.73rem, 1.48rem + 1.1vw, 2.6rem);
@@ -85,7 +69,7 @@
   /* Interlignages */
   --leading-serre: 1.04;
   --leading-titre: 1.18;
-  --leading-texte: 1.72;
+  --leading-texte: 1.55;
 
   /* Longueur de ligne du texte courant : 60 à 75 caractères */
   --mesure: 64ch;

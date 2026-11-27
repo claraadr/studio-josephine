@@ -10,9 +10,9 @@ export const studio = {
   disciplines: 'Branding, webdesign, print',
 
   // Coordonnées (pied de page, contact, à propos)
-  email: null as string | null, // ex. 'bonjour@exemple.fr'
+  email: 'hello@studio-josephine.fr' as string | null, // d'après la maquette de l'accueil
   linkedin: null as string | null, // adresse complète du profil, ex. 'https://www.linkedin.com/in/…'
-  ville: null as string | null,
+  ville: 'Angers' as string | null,
 
   // Mentions légales
   statut: null as string | null, // ex. 'Entreprise individuelle'

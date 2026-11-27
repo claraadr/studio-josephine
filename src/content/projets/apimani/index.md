@@ -8,12 +8,26 @@ annee:
 role: "Graphiste au sein de l’entreprise : déploiement de l’identité, refonte du site, prises de vue"
 familles: [webdesign, print]
 disciplines: ["UX/UI Design", "Graphisme", "Photographie"]
-ordre: 3
+ordre: 4
 accueil: true
 credits:
   - "Nouvelle identité de marque conçue par l’agence La Racine"
   - "Déploiement de l’identité, refonte du site et prises de vue : Clara Audureau"
 conclusion: "Ce projet m’a permis de faire le lien entre stratégie de marque, expérience utilisateur et déploiement digital, en accompagnant une marque dans une phase importante de son évolution."
+
+# Carte sur l’accueil
+accroche: "Marque d’accessoires d’hygiène écologiques"
+extrait: "Une marque en pleine croissance, avec une nouvelle identité signée par l’agence La Racine. J’ai mené la refonte complète du site et réalisé les photos produits."
+etiquettes: ["UX/UI", "Webdesign", "Print"]
+
+# Avis du client (section « Ces entreprises m’ont fait confiance »)
+logo: "./logo.svg"
+avis:
+  # À remplacer par le vrai avis du client (texte provisoire de la maquette)
+  citation: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  nom: "Alexis Godicheau"
+  role: "Co-fondateur"
+  ordre: 2
 
 # Couverture : déposez l’image dans ce dossier, puis retirez les # des trois lignes ci-dessous.
 # couverture:

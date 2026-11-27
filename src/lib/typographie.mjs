@@ -38,3 +38,16 @@ export function typoHtml(html) {
     })
     .join('');
 }
+
+const A_COMPLETER = /\[À COMPLÉTER[\s ]*:[^\]]*\]/g;
+
+/** Signale en rose, dans un fragment HTML, les mentions « [À COMPLÉTER : …] » des contenus. */
+export function marquerACompleter(html) {
+  return html.replace(A_COMPLETER, (m) => `<mark class="a-completer">${m}</mark>`);
+}
+
+/** Texte brut → HTML sûr, avec typographie française et mentions « à compléter » signalées. */
+export function texteHtml(texte) {
+  const echappe = String(texte).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return marquerACompleter(typo(echappe));
+}

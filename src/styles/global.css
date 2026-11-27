@@ -39,23 +39,23 @@ h4 {
   text-wrap: balance;
 }
 
+/* Titres en Readex Pro gras, comme dans la maquette de l'accueil */
 h1 {
   font-size: var(--step-5);
-  font-weight: 250;
-  line-height: var(--leading-serre);
-  letter-spacing: -0.025em;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 h2 {
   font-size: var(--step-3);
-  font-weight: 300;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  letter-spacing: -0.005em;
 }
 
 h3 {
   font-size: var(--step-1);
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  font-weight: 700;
 }
 
 p,
@@ -197,35 +197,61 @@ code {
 
 /* ---------- Boutons ---------- */
 
+/* Boutons en pilule (maquette) : bordeaux plein, anis, ou contour */
 .bouton {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6em;
-  min-height: var(--cible-min);
-  padding: 0.7em 1.35em 0.72em;
+  min-height: 2.625rem;
+  padding: 0.55em 1.4em;
   border: 1px solid var(--c-bordeaux);
-  border-radius: var(--rayon-main);
+  border-radius: 999px;
   background: var(--c-bordeaux);
   color: var(--c-lin);
-  font: 500 var(--step-0) / 1.2 var(--font-texte);
+  font: 600 1.0625rem / 1.2 var(--font-texte);
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
 .bouton:hover {
+  background: color-mix(in srgb, var(--c-bordeaux) 82%, #000);
+  border-color: color-mix(in srgb, var(--c-bordeaux) 82%, #000);
+}
+
+.bouton--anis {
+  border-color: var(--c-anis);
+  background: var(--c-anis);
+  color: var(--c-bordeaux);
+}
+
+.bouton--anis:hover {
+  border-color: color-mix(in srgb, var(--c-anis) 86%, var(--c-bordeaux));
+  background: color-mix(in srgb, var(--c-anis) 86%, var(--c-bordeaux));
+}
+
+.bouton--secondaire,
+.bouton--contour {
   background: transparent;
   color: var(--c-bordeaux);
 }
 
-.bouton--secondaire {
-  background: transparent;
-  color: var(--c-bordeaux);
-}
-
-.bouton--secondaire:hover {
+.bouton--secondaire:hover,
+.bouton--contour:hover {
   background: var(--c-bordeaux);
   color: var(--c-lin);
+}
+
+/* Sur fond foncé (bordeaux), le contour de focus passe en lin pour rester visible */
+.fond-fonce :focus-visible {
+  outline-color: var(--c-lin);
+}
+
+/* …mais redevient bordeaux dans une carte claire posée sur ce fond */
+.fond-fonce .fond-clair :focus-visible {
+  outline-color: var(--c-bordeaux);
 }
 
 .lien-fleche {
@@ -305,19 +331,20 @@ code {
 .cartouche {
   display: inline-flex;
   align-items: center;
-  gap: 0.45em;
   min-height: 1.75rem;
-  padding: 0.2em 0.75em 0.24em;
+  padding: 0.25em 1.1em 0.2em;
   border: 1px solid transparent;
-  border-radius: var(--rayon-main);
-  font-size: var(--step--1);
+  border-radius: 999px;
+  font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.2;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--c-bordeaux);
   white-space: nowrap;
 }
 
+/* Une couleur par famille (maquette) : bordeaux dessus ≥ 4,5 : 1 sur les trois */
 .cartouche--branding {
   background: var(--c-branding);
 }
@@ -326,18 +353,12 @@ code {
   background: var(--c-webdesign);
 }
 
-/* Le corail ne porte pas de texte : fond lin, filet bordeaux, pastille corail */
 .cartouche--print {
-  background: var(--c-lin);
-  border-color: var(--c-bordeaux);
+  background: var(--c-print);
 }
 
-.cartouche--print::before {
-  content: '';
-  width: 0.62em;
-  height: 0.58em;
-  border-radius: 52% 48% 55% 45%;
-  background: var(--c-print);
+.cartouche--blanc {
+  background: #fff;
 }
 
 .cartouche--neutre {
@@ -448,6 +469,48 @@ code {
 .bandeau__pause svg {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+/* Variante pleine (maquette) : bande bordeaux, capitales lin séparées par des puces */
+.bandeau--plein {
+  gap: 0;
+  padding-inline: 0;
+  border: 0;
+  background: var(--c-bordeaux);
+  color: var(--c-lin);
+}
+
+.bandeau--plein .bandeau__fenetre {
+  mask-image: none;
+}
+
+.bandeau--plein .bandeau__liste li {
+  gap: 0.55em;
+  padding-block: clamp(1.25rem, 0.9rem + 1.3vw, 2.3rem);
+  padding-left: 0.55em;
+  font-family: var(--font-texte);
+  font-size: clamp(1.125rem, 0.8rem + 1.1vw, 1.6875rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.bandeau--plein .bandeau__liste li::after {
+  content: '•';
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+
+.bandeau--plein .bandeau__pause {
+  order: 2;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-inline: var(--space-xs) var(--space-s);
+  border-color: rgb(243 238 230 / 0.55);
+  background: var(--c-bordeaux);
+  color: var(--c-lin);
 }
 
 @keyframes bandeau {

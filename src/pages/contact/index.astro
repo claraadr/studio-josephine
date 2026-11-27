@@ -181,6 +181,17 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
       }
     };
     objets.forEach((o) => o.addEventListener('change', majCreation));
+
+    // Arrivée depuis un bouton d'offre (/contact/?objet=site…) : l'objet est déjà coché
+    const correspondances: Record<string, string> = {
+      identite: 'Une identité de marque',
+      site: 'Un site web',
+      imprime: 'Un support imprimé',
+      recrutement: 'Un recrutement ou une collaboration',
+    };
+    const voulu = correspondances[new URL(window.location.href).searchParams.get('objet') ?? ''];
+    const choix = objets.find((o) => o.value === voulu);
+    if (choix) choix.checked = true;
     majCreation();
 
     const regles: { id: string; verifier: () => string | null }[] = [
@@ -303,7 +314,7 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
 
   .contact__direct h2 {
     font-size: var(--step-2);
-    font-weight: 300;
+    font-weight: 700;
   }
 
   .contact__direct ul {
@@ -402,7 +413,7 @@ const pageMerci = new URL(url('/contact/merci/'), Astro.site).href;
   .confirmation__titre {
     font-family: var(--font-titres);
     font-size: var(--step-2);
-    font-weight: 300;
+    font-weight: 700;
   }
 
   textarea {

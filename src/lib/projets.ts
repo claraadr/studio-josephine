@@ -25,5 +25,22 @@ export function autresDisciplines(projet: Projet): string[] {
   return projet.data.disciplines.filter((d) => !noms.has(d.toLowerCase()));
 }
 
+/** Couleur d'une étiquette de discipline : celle de sa famille (maquette). */
+const FAMILLE_DES_ETIQUETTES: Record<string, Famille> = {
+  branding: 'branding',
+  'direction artistique': 'branding',
+  'identité de marque': 'branding',
+  webdesign: 'webdesign',
+  'ux/ui': 'webdesign',
+  'ux/ui design': 'webdesign',
+  print: 'print',
+  packaging: 'print',
+  graphisme: 'print',
+};
+
+export function familleEtiquette(etiquette: string): Famille | 'neutre' {
+  return FAMILLE_DES_ETIQUETTES[etiquette.trim().toLowerCase()] ?? 'neutre';
+}
+
 /** Numéro d'affichage sur deux chiffres : 01, 02… */
 export const numero = (n: number) => String(n).padStart(2, '0');
