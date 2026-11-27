@@ -1,5 +1,5 @@
 // Fabrique public/partage.png (1200 × 630), l'image affichée quand on partage un lien du site.
-// Elle reprend les éléments du premier écran. À relancer quand le logo de Clara sera intégré :
+// Elle reprend le logo, la phrase et les couleurs de la maquette. À relancer si le logo ou la phrase changent :
 //   npm run build && npm run image:partage
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -14,8 +14,9 @@ const serveur = createServer(async (req, res) => {
   let chemin = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (chemin.endsWith('/')) chemin += 'index.html';
   try {
+    const contenu = await readFile(join(DIST, chemin));
     res.writeHead(200, { 'Content-Type': TYPES[extname(chemin)] ?? 'application/octet-stream' });
-    res.end(await readFile(join(DIST, chemin)));
+    res.end(contenu);
   } catch {
     res.writeHead(404);
     res.end();
@@ -27,32 +28,39 @@ const navigateur = await chromium.launch(process.env.CHROMIUM_PATH ? { executabl
 const page = await navigateur.newPage({ viewport: { width: 1200, height: 630 } });
 await page.goto(`http://localhost:${serveur.address().port}/`, { waitUntil: 'networkidle' });
 await page.evaluate(async () => {
-  const visuel = document.querySelector('.hero__visuel').cloneNode(true);
+  const logo = document.querySelector('.entete .logo svg').cloneNode(true);
   document.body.innerHTML = `
     <div class="og">
       <div class="og__texte">
-        <p class="surtitre">Clara Audureau · graphiste et webdesigner indépendante</p>
-        <p class="og__nom">Studio Joséphine</p>
-        <p class="og__disciplines">
-          <span><span class="pastille pastille--branding"></span>Branding</span>
-          <span><span class="pastille pastille--webdesign"></span>Webdesign</span>
-          <span><span class="pastille pastille--print"></span>Print</span>
+        <div class="og__logo"></div>
+        <p class="og__metier">Graphiste &amp; webdesigner freelance à Angers</p>
+        <p class="og__phrase">Je conçois des expériences graphiques où esthétique, simplicité et fonctionnalité se rencontrent.</p>
+        <p class="og__familles">
+          <span class="cartouche cartouche--branding">Branding</span>
+          <span class="cartouche cartouche--webdesign">Webdesign</span>
+          <span class="cartouche cartouche--print">Print</span>
         </p>
       </div>
+      <div class="og__pile" aria-hidden="true"><span></span><span></span><span></span></div>
     </div>`;
-  document.querySelector('.og').append(visuel);
+  document.querySelector('.og__logo').append(logo);
   const style = document.createElement('style');
   style.textContent = `
-    body { margin: 0; }
-    .og { box-sizing: border-box; width: 1200px; height: 630px; padding: 72px 64px 64px 80px;
-      display: grid; grid-template-columns: 1fr 330px; gap: 48px; align-items: center; background: var(--c-lin); }
-    .og__texte { display: grid; gap: 28px; }
-    .og__nom { margin: 0; font-family: var(--font-titres); font-weight: 220; font-size: 104px; line-height: 0.98; letter-spacing: -0.035em; }
-    .og__disciplines { display: flex; gap: 40px; margin: 0; padding-top: 22px; border-top: 1px solid var(--c-filet);
-      font-family: var(--font-titres); font-weight: 300; font-size: 34px; }
-    .og__disciplines > span { display: inline-flex; align-items: center; gap: 14px; }
-    .og .hero__visuel { grid-column: 2 !important; grid-row: 1 !important; align-self: center !important; width: 330px; padding: 0; position: relative; }
-    .og .hero__estampille { position: absolute; top: -6%; right: -8%; width: 52%; }`;
+    body { margin: 0; background: var(--c-lin); }
+    .og { box-sizing: border-box; width: 1200px; height: 630px; display: grid; grid-template-columns: 1fr 360px;
+      background: var(--c-lin); color: var(--c-bordeaux); overflow: hidden; }
+    .og__texte { display: grid; align-content: center; gap: 22px; padding: 0 56px 0 80px; }
+    .og__logo svg { display: block; width: 330px; height: auto; }
+    .og__metier { margin: 6px 0 0; font: 500 18px/1.2 var(--font-texte); text-transform: uppercase; letter-spacing: 0.04em; }
+    .og__phrase { margin: 0; font: 700 40px/1.2 var(--font-titres); max-width: 660px; }
+    .og__familles { display: flex; gap: 12px; margin: 8px 0 0; }
+    .og__familles .cartouche { font-size: 16px; padding: 6px 18px; }
+    .og__pile { position: relative; background: var(--c-bordeaux); }
+    .og__pile span { position: absolute; left: 44px; right: -40px; height: 300px; border-radius: 22px; background: var(--c-lin);
+      box-shadow: 0 -12px 32px -16px rgb(30 4 12 / 0.55); }
+    .og__pile span:nth-child(1) { top: 96px; transform: rotate(-1.1deg); }
+    .og__pile span:nth-child(2) { top: 120px; transform: rotate(1deg); }
+    .og__pile span:nth-child(3) { top: 144px; transform: rotate(-0.45deg); }`;
   document.head.append(style);
   await document.fonts.ready;
 });

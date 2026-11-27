@@ -1,118 +1,151 @@
 ---
-import Estampille from './Estampille.astro';
+/**
+ * Pied de page (maquette de Clara) : logo et présentation, liens du site, contact.
+ * Les liens légaux, obligatoires, sont ajoutés sur une ligne discrète en bas.
+ */
+import Logo from './Logo.astro';
 import ACompleter from './ACompleter.astro';
 import { studio } from '../config';
 import { url } from '../lib/url';
 ---
 
 <footer class="pied">
-  <div class="pied__lisere vichy" aria-hidden="true"></div>
-  <div class="conteneur pied__grille">
-    <div class="pied__signature">
-      <p class="pied__nom">Studio Joséphine</p>
-      <p class="legende">Clara Audureau<br />Graphiste et webdesigner indépendante<br />Branding, webdesign, print</p>
+  <div class="pied__grille">
+    <div class="pied__studio">
+      <Logo largeur="clamp(11rem, 16vw, 15.25rem)" />
+      <p class="pied__metier">Graphiste &amp; webdesigner freelance à Angers</p>
+      <p class="pied__texte">
+        Studio Joséphine accompagne les indépendants, commerçants et petites entreprises d’Angers et de l’Anjou dans la
+        création de leur identité visuelle, de leur site internet et de leurs supports imprimés&nbsp;: logo, charte
+        graphique, webdesign et packaging.
+      </p>
     </div>
 
-    <div class="pied__bloc pied__contact">
-      <h2 class="pied__titre">Me joindre</h2>
+    <nav class="pied__colonne" aria-labelledby="pied-studio">
+      <h2 class="pied__titre" id="pied-studio">Studio Joséphine</h2>
       <ul>
-        <li>
-          {studio.email ? <a href={`mailto:${studio.email}`}>{studio.email}</a> : <ACompleter quoi="adresse email" />}
-        </li>
-        <li>
-          {studio.linkedin ? <a href={studio.linkedin}>LinkedIn</a> : <ACompleter quoi="lien LinkedIn" />}
-        </li>
-        <li><a href={url('/contact/')}>Formulaire de contact</a></li>
-      </ul>
-    </div>
-
-    <nav class="pied__bloc pied__plan" aria-label="Plan du site">
-      <h2 class="pied__titre">Le site</h2>
-      <ul>
-        <li><a href={url('/projets/')}>Projets</a></li>
+        <li><a href={url('/projets/')}>Réalisations</a></li>
         <li><a href={url('/services/')}>Services</a></li>
-        <li><a href={url('/#a-propos')}>À propos</a></li>
-        <li><a href={url('/mentions-legales/')}>Mentions légales</a></li>
-        <li><a href={url('/confidentialite/')}>Confidentialité</a></li>
+        <li><a href={url('/a-propos/')}>À propos</a></li>
+        <li><a href={url('/contact/')}>Contact</a></li>
       </ul>
     </nav>
 
-    <div class="pied__estampille">
-      <Estampille angle={-7} taille="clamp(6.5rem, 5.5rem + 3vw, 8.5rem)" accent="rose" graine={12} texte="Studio Joséphine · branding · webdesign · print · " />
+    <div class="pied__colonne">
+      <h2 class="pied__titre">Contact</h2>
+      <p>
+        {
+          studio.email ? (
+            <a class="pied__email" href={`mailto:${studio.email}`}>
+              {studio.email}
+            </a>
+          ) : (
+            <ACompleter quoi="adresse email" />
+          )
+        }
+        <br />À Angers, et partout en France, à distance
+      </p>
+      {studio.linkedin && <p class="pied__linkedin"><a href={studio.linkedin}>LinkedIn</a></p>}
     </div>
+  </div>
+
+  <div class="pied__legal">
+    <a href={url('/mentions-legales/')}>Mentions légales</a>
+    <a href={url('/confidentialite/')}>Confidentialité</a>
   </div>
 </footer>
 
 <style>
   .pied {
-    margin-top: var(--space-3xl);
-  }
-
-  .pied__lisere {
-    height: 0.6rem;
-    border-block: 1px solid var(--c-filet);
+    width: min(75rem, 100% - 2 * var(--marge));
+    margin-inline: auto;
+    padding-block: clamp(3rem, 2rem + 3vw, 5.2rem) var(--space-l);
   }
 
   .pied__grille {
     display: grid;
-    gap: var(--space-l) var(--gouttiere);
-    padding-block: var(--space-xl) var(--space-l);
+    gap: var(--space-l);
   }
 
-  .pied__nom {
-    font-family: var(--font-titres);
-    font-size: var(--step-2);
-    font-weight: 300;
-    line-height: 1.1;
-    margin-bottom: var(--space-2xs);
+  .pied__studio {
+    display: grid;
+    gap: var(--space-2xs);
+    justify-items: start;
+    max-inline-size: 22.5rem;
   }
 
-  .pied__titre {
-    margin-bottom: var(--space-2xs);
-    font-family: var(--font-texte);
-    font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.14em;
+  .pied__metier {
+    margin-top: var(--space-s);
+    font-weight: 700;
+    line-height: 1.4;
     text-transform: uppercase;
   }
 
-  .pied__bloc ul {
+  .pied__texte {
+    line-height: 1.35;
+  }
+
+  .pied__titre {
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-texte);
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .pied__colonne ul {
+    display: grid;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .pied__bloc a {
+  .pied__colonne ul a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.3rem;
+    text-decoration-line: none;
+  }
+
+  .pied__colonne ul a:hover {
+    text-decoration-line: underline;
+  }
+
+  .pied__colonne p {
+    line-height: 1.4;
+  }
+
+  .pied__email {
+    font-style: italic;
+    font-weight: 700;
+    text-decoration-line: none;
+  }
+
+  .pied__email:hover {
+    text-decoration-line: underline;
+  }
+
+  .pied__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-m);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-s);
+    border-top: var(--filet);
+    font-size: 0.875rem;
+  }
+
+  .pied__legal a {
     display: inline-flex;
     align-items: center;
     min-height: var(--cible-min);
-  }
-
-  .pied__estampille {
-    justify-self: start;
+    color: var(--c-texte-secondaire);
   }
 
   @media (min-width: 48em) {
     .pied__grille {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 475fr) minmax(0, 289fr) minmax(0, 436fr);
       align-items: start;
-    }
-
-    .pied__signature {
-      grid-column: 1 / 5;
-    }
-
-    .pied__contact {
-      grid-column: 5 / 8;
-    }
-
-    .pied__plan {
-      grid-column: 8 / 11;
-    }
-
-    .pied__estampille {
-      grid-column: 11 / 13;
-      justify-self: end;
     }
   }
 </style>

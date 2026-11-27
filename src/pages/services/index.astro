@@ -14,6 +14,7 @@ interface Pole {
   paroles: string[]; // ce que dit le client
   paroleEstUnBesoin?: boolean;
   promesse?: string;
+  prix: { avant?: string; montant: string; note?: string };
   travail: string[];
   note?: string;
 }
@@ -27,6 +28,7 @@ const poles: Pole[] = [
       'Mon logo date du lancement et ne me ressemble plus.',
     ],
     promesse: 'Une marque qui inspire confiance, en création ou en refonte.',
+    prix: { avant: 'À partir de', montant: '890 €' },
     travail: [
       'Brief',
       'Atelier de marque',
@@ -44,6 +46,7 @@ const poles: Pole[] = [
     nom: 'Webdesign',
     paroles: ['Mon activité a évolué, mais mon site date du lancement et ne m’apporte pas de clients.'],
     promesse: 'Un site à la hauteur de votre activité, qui transforme les visiteurs en clients.',
+    prix: { avant: 'À partir de', montant: '990 €', note: 'hors intégration' },
     travail: [
       'Audit de l’existant',
       'Atelier sur les objectifs et les clients',
@@ -60,6 +63,7 @@ const poles: Pole[] = [
     nom: 'Print',
     paroles: ['Un support ponctuel, ou une identité à décliner.'],
     paroleEstUnBesoin: true,
+    prix: { montant: 'Sur devis' },
     travail: [
       'Flyer',
       'Affiche',
@@ -125,6 +129,12 @@ const etapes = [
               {typo(pole.promesse)}
             </p>
           )}
+          <p class="pole__prix">
+            <span class="pole__qui">Tarif</span>
+            {pole.prix.avant && <>{pole.prix.avant} </>}
+            <strong>{pole.prix.montant.replace(/(\d) €/, '$1\u00a0€')}</strong>
+            {pole.prix.note && <> ({pole.prix.note})</>}
+          </p>
           <div class="pole__travail">
             <h3 class="pole__qui">Le travail comprend</h3>
             <ul class="pole__liste">
@@ -217,7 +227,7 @@ const etapes = [
     max-inline-size: 30ch;
     font-family: var(--font-titres);
     font-size: var(--step-3);
-    font-weight: 250;
+    font-weight: 500;
     line-height: 1.2;
     letter-spacing: -0.015em;
     text-wrap: balance;
@@ -234,6 +244,14 @@ const etapes = [
     font-size: var(--step-1);
     font-weight: 500;
     line-height: 1.45;
+  }
+
+  .pole__prix {
+    font-size: var(--step-1);
+  }
+
+  .pole__prix strong {
+    font-weight: 700;
   }
 
   .pole__liste {
@@ -273,6 +291,7 @@ const etapes = [
       grid-column: 4 / 10;
     }
 
+    .pole__prix,
     .pole__travail,
     .pole__projets {
       grid-column: 1 / 10;
@@ -301,7 +320,7 @@ const etapes = [
     grid-row: span 2;
     font-family: var(--font-titres);
     font-size: var(--step-4);
-    font-weight: 200;
+    font-weight: 700;
     line-height: 1;
   }
 

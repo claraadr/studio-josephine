@@ -13,15 +13,30 @@ Ce qui manque encore est listé dans [`A-COMPLETER.md`](A-COMPLETER.md) et signa
 
 | Page | Adresse | Fichier |
 | --- | --- | --- |
-| Accueil | `/` | `src/pages/index.astro` |
-| Projets, filtrables par famille | `/projets/` | `src/pages/projets/index.astro` |
+| Accueil (maquette de Clara) | `/` | `src/pages/index.astro` |
+| Réalisations, filtrables par famille | `/projets/` | `src/pages/projets/index.astro` |
 | Étude de cas (une par projet) | `/projets/nom-du-projet/` | `src/content/projets/nom-du-projet/index.md` |
 | Services | `/services/` | `src/pages/services/index.astro` |
+| À propos | `/a-propos/` | `src/pages/a-propos/index.astro` |
 | Contact, puis confirmation | `/contact/`, `/contact/merci/` | `src/pages/contact/` |
 | Mentions légales | `/mentions-legales/` | `src/pages/mentions-legales/index.astro` |
 | Confidentialité | `/confidentialite/` | `src/pages/confidentialite/index.astro` |
 | Page introuvable | toute adresse inconnue | `src/pages/404.astro` |
 | Guide de styles (non référencé) | `/guide-de-styles/` | `src/pages/guide-de-styles/index.astro` |
+
+## L'accueil
+
+L'accueil reprend la maquette de Clara (Figma), avec ses textes passés au vouvoiement :
+
+- un premier écran centré, avec cinq emplacements de visuels en attendant les images ;
+- le bandeau défilant bordeaux (avec un bouton pause, obligatoire pour l'accessibilité) ;
+- les trois offres avec leurs prix, dont les boutons ouvrent le contact avec l'objet déjà coché ;
+- « Quelques projets » : les projets marqués `accueil: true`, en cartes de 1 200 px qui s'empilent au
+  défilement (collées à 96 px, puis 24 px plus bas pour chaque carte) ; l'empilement se désactive si l'écran est
+  trop bas pour montrer une carte entière (`src/components/PileProjets.astro`) ;
+- « Ces entreprises m'ont fait confiance » : les projets qui ont un `avis`, sur la texture vichy de la maquette
+  (`src/components/CarrouselAvis.astro`) ;
+- la bande corail d'appel au contact.
 
 ## Mettre à jour le site sans coder
 
@@ -30,7 +45,7 @@ Chaque modification fusionnée dans `main` est republiée automatiquement en deu
 
 ### Coordonnées et mentions légales
 
-Dans [`src/config.ts`](src/config.ts), remplacer chaque `null` par la valeur entre apostrophes,
+Dans [`src/config.ts`](src/config.ts) (l'email et la ville viennent de la maquette), remplacer chaque `null` par la valeur entre apostrophes,
 par exemple `email: 'bonjour@exemple.fr',`. Tant qu'une valeur vaut `null`, le site affiche « [À COMPLÉTER : …] ».
 
 ### Formulaire de contact
@@ -79,6 +94,10 @@ Les pages portent `noindex` tant que des informations manquent. Le jour du lance
 | `ordre`, `accueil` | L'ordre d'affichage, et `true` pour mettre le projet en avant sur l'accueil |
 | `credits`, `mention` | Les crédits (toujours visibles) et une mention éventuelle (ex. projet de fin d'études) |
 | `conclusion` | La phrase qui ferme la page (« Ce projet m'a permis… ») |
+| `accroche`, `extrait`, `etiquettes` | La carte du projet sur l'accueil : ligne d'accroche, court texte, étiquettes (Branding, Webdesign, UX/UI, Print, Packaging…) colorées selon leur famille |
+| `logo`, `avis` | Le logo du client (SVG ou PNG dans le dossier du projet) et son avis (`citation`, `nom`, `role`, `ordre`) pour la section « Ces entreprises m'ont fait confiance » |
+
+Un texte encore inconnu s'écrit `[À COMPLÉTER : …]` : il apparaît en rose sur la page.
 
 La typographie française (espaces insécables, apostrophes courbes) est appliquée automatiquement aux textes.
 
@@ -178,6 +197,9 @@ ressources-clara/          fichiers fournis par Clara (logo, typos, visuels sour
 
 ### Typographies
 
-Readex Pro (titres) et Poppins (texte courant) sont sous licence libre SIL Open Font License et hébergées dans
-`public/fonts/`. Readex Pro est réduite aux caractères latins et son axe HEXP est fixé à 0. Poppins : graisses 400,
-500, 600 et italique 400.
+Readex Pro (titres, en gras) et DM Sans (texte courant, comme dans la maquette de Clara) sont sous licence libre
+SIL Open Font License et hébergées dans `public/fonts/`. Readex Pro est réduite aux caractères latins et son axe HEXP
+est fixé à 0. DM Sans est une police variable (graisses 400 à 700, romain et italique).
+
+Le logo (`src/components/Logo.astro`) est le logotype de Clara, extrait de sa maquette en SVG sans être redessiné ;
+il hérite de la couleur du texte. L'icône d'onglet (`public/favicon.svg`) reprend son « j » et son point.

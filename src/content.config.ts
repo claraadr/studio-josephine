@@ -48,6 +48,22 @@ const projets = defineCollection({
       credits: z.array(z.string()).nullish(),
       mention: z.string().nullish(), // à signaler en tête de page (ex. projet de fin d'études)
       conclusion: z.string(), // la phrase qui ferme la page
+
+      // Carte du projet sur l'accueil (maquette) : ligne d'accroche, court texte, étiquettes colorées
+      accroche: z.string().nullish(),
+      extrait: z.string().nullish(),
+      etiquettes: z.array(z.string()).nullish(), // ex. Branding, Webdesign, Packaging, UX/UI, Print
+
+      // Avis du client, affiché dans « Ces entreprises m'ont fait confiance »
+      logo: image().nullish(), // logo du client (SVG ou PNG), placé dans le dossier du projet
+      avis: z
+        .object({
+          citation: z.string(),
+          nom: z.string(),
+          role: z.string(),
+          ordre: z.number(),
+        })
+        .nullish(),
       images: z
         .object({
           ouverture: visuel.nullish(), // sinon : la couverture

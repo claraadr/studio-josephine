@@ -1,14 +1,15 @@
 ---
+/**
+ * Accueil, d'après la maquette de Clara (Figma, export du 27 novembre 2026).
+ * Textes de la maquette passés au vouvoiement, comme le reste du site.
+ */
 import Base from '../layouts/Base.astro';
 import Bandeau from '../components/Bandeau.astro';
-import Estampille from '../components/Estampille.astro';
-import Echantillons from '../components/Echantillons.astro';
-import Souligne from '../components/Souligne.astro';
-import CarteProjet from '../components/CarteProjet.astro';
-import Fleche from '../components/Fleche.astro';
-import ACompleter from '../components/ACompleter.astro';
+import PileProjets from '../components/PileProjets.astro';
+import CarrouselAvis from '../components/CarrouselAvis.astro';
 import { projetsTries } from '../lib/projets';
 import { url } from '../lib/url';
+import { typo } from '../lib/typographie.mjs';
 import { studio } from '../config';
 
 const projets = (await projetsTries()).filter((p) => p.data.accueil);
@@ -24,19 +25,47 @@ const motsCles = [
   'univers visuel',
 ];
 
-const services = [
-  { id: 'branding', nom: 'Branding', phrase: 'Une marque qui inspire confiance, en création ou en refonte.' },
+const offres = [
   {
-    id: 'webdesign',
-    nom: 'Webdesign',
-    phrase: 'Un site à la hauteur de votre activité, qui transforme les visiteurs en clients.',
+    famille: 'branding',
+    etiquette: 'Branding',
+    titre: 'Vous lancez votre projet, ou vous voulez lui donner un nouveau souffle ?',
+    texte:
+      'C’est votre identité qui fait qu’on vous reconnaît, qu’on vous fait confiance et qu’on se souvient de vous. Ensemble, on construit une image qui vous ressemble et qui donne envie de vous choisir.',
+    obtenez:
+      'Une identité cohérente et facile à reconnaître, prête à être utilisée partout, de votre carte de visite à votre compte Instagram.',
+    prix: { avant: 'À partir de', montant: '890 €' },
+    bouton: 'Créer mon identité',
+    objet: 'identite',
   },
   {
-    id: 'print',
-    nom: 'Print',
-    phrase: 'Un support ponctuel ou une identité à décliner, livrés en fichiers prêts à imprimer.',
+    famille: 'webdesign',
+    etiquette: 'Webdesign',
+    titre: 'Votre site ne dit pas tout ce que vous valez ?',
+    texte:
+      'Un visiteur décide en quelques secondes s’il reste ou s’il part. D’un coup d’œil, il doit comprendre qui vous êtes, ce que vous proposez et comment vous joindre, sur ordinateur comme sur mobile.',
+    obtenez:
+      'Un site clair et agréable à parcourir, où vos visiteurs trouvent ce qu’ils cherchent et passent à l’action : réserver, acheter ou vous contacter.',
+    prix: { avant: 'À partir de', montant: '990 €*', note: '*hors intégration' },
+    bouton: 'Imaginer mon site',
+    objet: 'site',
+  },
+  {
+    famille: 'print',
+    etiquette: 'Print',
+    titre: 'Un lancement produit, un événement à annoncer ?',
+    texte:
+      'Plaquette, flyer, étiquette ou packaging : des supports qui attirent l’œil en rayon comme sur un stand, et qui sortent de chez l’imprimeur exactement comme prévu.',
+    obtenez:
+      'Des supports soignés jusque dans les détails, fidèles à votre identité et prêts à partir chez l’imprimeur.',
+    prix: { montant: 'Sur devis' },
+    bouton: 'Parler de mon projet',
+    objet: 'imprime',
   },
 ];
+
+// Espace insécable entre un nombre et « € »
+const prix = (s: string) => typo(s.replace(/(\d) €/g, '$1 €'));
 
 const adresse = new URL(url('/'), Astro.site).href;
 const donnees = {
@@ -46,7 +75,7 @@ const donnees = {
       '@type': 'Person',
       '@id': `${adresse}#clara`,
       name: studio.personne,
-      jobTitle: studio.metier,
+      jobTitle: 'Graphiste et webdesigner freelance',
       url: adresse,
       sameAs: studio.linkedin ? [studio.linkedin] : undefined,
       knowsAbout: ['Identité de marque', 'Direction artistique', 'Webdesign', 'UX/UI', 'Print', 'Packaging'],
@@ -56,9 +85,11 @@ const donnees = {
       '@id': `${adresse}#studio`,
       name: studio.nom,
       url: adresse,
-      description: 'Studio de graphisme : identité de marque, webdesign et supports imprimés.',
+      description:
+        'Identité visuelle, site internet et supports imprimés pour les indépendants, commerçants et petites entreprises.',
       founder: { '@id': `${adresse}#clara` },
       email: studio.email ?? undefined,
+      areaServed: 'FR',
       address: studio.ville ? { '@type': 'PostalAddress', addressLocality: studio.ville, addressCountry: 'FR' } : undefined,
     },
   ],
@@ -66,336 +97,331 @@ const donnees = {
 ---
 
 <Base
-  titre="Studio Joséphine — Clara Audureau, graphiste et webdesigner indépendante"
+  titre="Studio Joséphine — graphiste & webdesigner freelance à Angers"
   titreComplet
-  description="Studio Joséphine, le studio de Clara Audureau, graphiste et webdesigner indépendante : identité de marque, sites web et supports imprimés."
+  description="Clara Audureau, graphiste et webdesigner freelance à Angers : identité de marque, site internet et supports imprimés pour les indépendants, commerçants et petites entreprises."
   donneesStructurees={donnees}
 >
   <!-- Premier écran -->
-  <section class="conteneur grille hero" aria-labelledby="hero-titre">
-    <p class="surtitre hero__qui">Clara Audureau · graphiste et webdesigner indépendante</p>
-    <h1 id="hero-titre" class="hero__titre">
-      Je conçois des expériences graphiques où <Souligne couleur="rose" trace={1}>esthétique</Souligne>, <Souligne
-        couleur="anis"
-        trace={2}>simplicité</Souligne
-      > et <Souligne couleur="corail" trace={3}>fonctionnalité</Souligne> se rencontrent.
-    </h1>
-    <ul class="hero__disciplines" aria-label="Mes disciplines">
-      {
-        services.map((s, i) => (
-          <li>
-            <a href={url(`/services/#${s.id}`)}>
-              <span class="numero">{`0${i + 1}`}</span>
-              <span class="hero__discipline">{s.nom}</span>
-              <span class={`pastille pastille--${s.id}`} aria-hidden="true" />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <div class="hero__visuel" aria-hidden="true">
-      <Echantillons />
-      <div class="hero__estampille">
-        <Estampille angle={-11} taille="100%" graine={3} />
+  <section class="hero" aria-labelledby="hero-titre">
+    <div class="hero__decor" aria-hidden="true">
+      <span class="hero__aplat hero__aplat--1"></span>
+      <span class="hero__aplat hero__aplat--2"></span>
+      <span class="hero__aplat hero__aplat--3"></span>
+      <span class="hero__aplat hero__aplat--4"></span>
+      <span class="hero__aplat hero__aplat--5"></span>
+    </div>
+    <div class="hero__contenu">
+      <p class="hero__metier">Graphiste &amp; webdesigner freelance à Angers</p>
+      <h1 id="hero-titre">
+        Je conçois des expériences graphiques où esthétique, simplicité et fonctionnalité se rencontrent.
+      </h1>
+      <div class="hero__actions">
+        <a class="bouton bouton--anis" href={url('/projets/')}>Mes réalisations</a>
+        <a class="bouton bouton--contour" href={url('/contact/')}>On en parle&nbsp;?</a>
       </div>
     </div>
   </section>
 
-  <Bandeau mots={motsCles} label="Mots-clés de mon travail" />
+  <Bandeau mots={motsCles} variante="plein" label="Mes savoir-faire" />
 
-  <!-- Projets phares -->
-  <section class="conteneur grille section accueil-projets" aria-labelledby="projets-titre">
-    <header class="marge tete">
-      <span class="numero" aria-hidden="true">01</span>
-      <h2 id="projets-titre">Projets</h2>
-    </header>
-    <div class="liste-projets">
-      {projets.map((projet, i) => <CarteProjet projet={projet} index={i} />)}
-    </div>
-    <p class="accueil-projets__tous">
-      <a class="lien-fleche" href={url('/projets/')}>Tous les projets <Fleche /></a>
-    </p>
-  </section>
-
-  <!-- Services en bref -->
-  <section class="conteneur grille section" aria-labelledby="services-titre">
-    <header class="marge tete">
-      <span class="numero" aria-hidden="true">02</span>
-      <h2 id="services-titre">Services</h2>
-    </header>
-    <div class="corps">
-      <ul class="services-bref">
-        {
-          services.map((s) => (
-            <li>
-              <h3>
-                <span class={`pastille pastille--${s.id}`} aria-hidden="true" />
-                {s.nom}
-              </h3>
-              <p>{s.phrase}</p>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="services-bref__lien">
-        <a class="lien-fleche" href={url('/services/')}>Comment je travaille <Fleche /></a>
+  <!-- Ce que je peux faire pour vous -->
+  <section class="offres" aria-labelledby="offres-titre">
+    <div class="offres__tete">
+      <h2 id="offres-titre">Ce que je peux faire pour vous</h2>
+      <p>
+        Que vous partiez de zéro ou que votre activité ait besoin d’un nouveau souffle, il y a une formule pour vous.
       </p>
     </div>
-  </section>
-
-  <!-- À propos -->
-  <section id="a-propos" class="conteneur grille section" aria-labelledby="a-propos-titre">
-    <header class="marge tete">
-      <span class="numero" aria-hidden="true">03</span>
-      <h2 id="a-propos-titre">À propos</h2>
-    </header>
-    <div class="corps apropos">
-      <p class="apropos__accroche">Moi, c’est Clara.</p>
-      <div class="prose prose--grande apropos__texte">
-        <p>
-          J’ai cinq ans d’expérience, acquise chez Althode sur les marques Ehop! et Apimani. J’accompagne
-          aujourd’hui des entreprises sur leur identité de marque, leur site et leurs supports imprimés.
-        </p>
-        <p>
-          J’accorde une attention particulière aux projets qui portent des valeurs sociales, environnementales ou
-          humaines, en y apportant une approche créative, sensible et cohérente.
-        </p>
-        <p>
-          Ce qui m’anime&nbsp;: découvrir de nouveaux univers, comprendre les problématiques propres à chaque
-          secteur et imaginer des solutions graphiques qui ont du sens.
-        </p>
-      </div>
-      <dl class="apropos__infos">
-        <div>
-          <dt>Mes outils</dt>
-          <dd>Illustrator, Photoshop, InDesign, Figma</dd>
-        </div>
-        <div>
-          <dt>Mon parcours</dt>
-          <dd>
-            {studio.linkedin ? <a href={studio.linkedin}>Mon profil LinkedIn</a> : <ACompleter quoi="lien LinkedIn" />}
-          </dd>
-        </div>
-      </dl>
+    <div class="offres__liste">
+      {
+        offres.map((o) => (
+          <article class={`offre offre--${o.famille}`} aria-labelledby={`offre-${o.famille}`}>
+            <p class="cartouche cartouche--blanc offre__etiquette">{o.etiquette}</p>
+            <h3 class="offre__titre" id={`offre-${o.famille}`}>
+              {typo(o.titre)}
+            </h3>
+            <p class="offre__texte">{typo(o.texte)}</p>
+            <h4 class="offre__sous-titre">Ce que vous obtenez</h4>
+            <p class="offre__texte">{typo(o.obtenez)}</p>
+            <p class="offre__prix">
+              {o.prix.avant && <>{o.prix.avant} </>}
+              <strong>{prix(o.prix.montant)}</strong>
+              {o.prix.note && <span class="offre__note">{o.prix.note}</span>}
+            </p>
+            <a class="bouton offre__bouton" href={url(`/contact/?objet=${o.objet}`)}>
+              {o.bouton}
+            </a>
+          </article>
+        ))
+      }
     </div>
   </section>
+
+  <!-- Quelques projets : cartes empilées au défilement -->
+  <section class="projets fond-fonce" aria-labelledby="projets-titre">
+    <h2 id="projets-titre">Quelques projets</h2>
+    <PileProjets projets={projets} />
+    <p class="projets__tous">
+      <a class="bouton bouton--anis" href={url('/projets/')}>Découvrir toutes mes réalisations</a>
+    </p>
+  </section>
+
+  <!-- Ces entreprises m'ont fait confiance -->
+  <CarrouselAvis />
 
   <!-- Appel au contact -->
-  <section class="conteneur grille appel" aria-labelledby="appel-titre">
-    <h2 id="appel-titre">Parlons de votre projet</h2>
+  <section class="bande-contact" aria-labelledby="bande-contact-titre">
+    <h2 id="bande-contact-titre">Un projet en tête&nbsp;? On en parle.</h2>
     <p>
-      Une identité à créer, un site à repenser, un support à imprimer&nbsp;: décrivez-moi votre besoin, je vous réponds
-      avec une proposition adaptée. Vous recrutez&nbsp;? Écrivez-moi aussi.
+      Racontez-moi votre activité et vos envies. Je vous réponds sous 48&nbsp;h, et ce premier échange est sans
+      engagement.
     </p>
-    <div class="appel__actions">
-      <a class="bouton" href={url('/contact/')}>Décrire mon projet <Fleche /></a>
-    </div>
+    <a class="bouton bouton--anis" href={url('/contact/')}>On en parle&nbsp;?</a>
   </section>
 </Base>
 
 <style>
-  /* Premier écran */
+  /* ---------- Premier écran ---------- */
   .hero {
-    row-gap: var(--space-m);
-    padding-block: var(--space-l) var(--space-xl);
-  }
-
-  /* Placement explicite de chaque élément (une règle « .hero > * » prendrait le pas, une fois scopée) */
-  .hero__qui,
-  .hero__titre {
-    grid-column: 1 / -1;
-  }
-
-  .hero__titre {
-    font-size: clamp(2rem, 1.2rem + 4.2vw, 4.6rem);
-    font-weight: 250;
-    line-height: 1.07;
-    letter-spacing: -0.028em;
-  }
-
-  .hero__disciplines {
-    grid-column: 1 / 8;
-    align-self: end;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .hero__disciplines li + li {
-    border-top: var(--filet);
-  }
-
-  .hero__disciplines a {
-    display: flex;
-    align-items: baseline;
-    gap: 0.7em;
-    min-height: var(--cible-min);
-    padding-block: 0.35em;
-    text-decoration-line: none;
-  }
-
-  .hero__disciplines .pastille {
-    align-self: center;
-  }
-
-  .hero__discipline {
-    font-family: var(--font-titres);
-    font-size: var(--step-2);
-    font-weight: 300;
-    line-height: 1.1;
-  }
-
-  .hero__disciplines a:hover .hero__discipline {
-    text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-  }
-
-  .hero__visuel {
     position: relative;
-    grid-column: 8 / 13;
-    align-self: end;
-    padding-top: 12%;
-  }
-
-  .hero__estampille {
-    position: absolute;
-    top: 0;
-    right: -6%;
-    width: 52%;
-  }
-
-  @media (min-width: 64em) {
-    .hero {
-      grid-template-rows: auto auto 1fr;
-      row-gap: var(--space-l);
-      padding-block: var(--space-xl) var(--space-2xl);
-    }
-
-    .hero__qui {
-      grid-column: 1 / 9;
-      grid-row: 1;
-    }
-
-    .hero__titre {
-      grid-column: 1 / 10;
-      grid-row: 2;
-    }
-
-    .hero__disciplines {
-      grid-column: 1 / 10;
-      grid-row: 3;
-      display: flex;
-      gap: var(--space-xl);
-      padding-top: var(--space-s);
-      border-top: var(--filet);
-    }
-
-    .hero__disciplines li + li {
-      border-top: 0;
-    }
-
-    .hero__visuel {
-      grid-column: 10 / 13;
-      grid-row: 1 / 4;
-      align-self: center;
-    }
-  }
-
-  /* Projets */
-  .accueil-projets .liste-projets {
-    margin-top: var(--space-m);
-  }
-
-  .accueil-projets__tous {
-    font-size: var(--step-1);
-  }
-
-  @media (min-width: 64em) {
-    .accueil-projets__tous {
-      grid-column: 2 / -1;
-    }
-  }
-
-  /* Services en bref : une liste éditoriale, pas des cartes */
-  .services-bref {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .services-bref li {
+    overflow: hidden;
     display: grid;
-    gap: var(--space-2xs) var(--gouttiere);
-    padding-block: var(--space-m);
-    border-top: var(--filet);
+    place-items: center;
+    padding: clamp(2rem, 1rem + 3vw, 4.25rem) var(--marge) clamp(3.5rem, 1.5rem + 6vw, 9.25rem);
+    text-align: center;
   }
 
-  .services-bref li:last-child {
-    border-bottom: var(--filet);
+  .hero__contenu {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
   }
 
-  .services-bref h3 {
+  .hero__metier {
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+
+  /* 50 px sur 700 px de large : les quatre lignes de la maquette */
+  .hero h1 {
+    max-inline-size: 14em;
+    margin-top: 0.6rem;
+    font-size: clamp(2rem, 3.31vw, 3.125rem);
+    line-height: 1.26;
+    letter-spacing: 0;
+    text-wrap: wrap;
+  }
+
+  .hero__actions {
     display: flex;
-    align-items: center;
-    gap: 0.45em;
-    font-size: var(--step-3);
-    font-weight: 300;
-    line-height: 1.1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-s) 2rem;
+    margin-top: 2.25rem;
   }
 
-  .services-bref h3 .pastille {
-    width: 0.32em;
-    height: 0.3em;
+  /* Emplacements des visuels de projets, en attendant les images */
+  .hero__decor {
+    display: none;
   }
 
-  .services-bref p {
-    max-inline-size: 40ch;
+  .hero__aplat {
+    position: absolute;
+    background: color-mix(in srgb, var(--c-bordeaux) 7%, var(--c-lin));
   }
 
-  .services-bref__lien {
-    margin-top: var(--space-m);
-  }
+  @media (min-width: 72em) {
+    .hero__decor {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
 
-  @media (min-width: 48em) {
-    .services-bref li {
-      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-      align-items: baseline;
+    .hero__aplat--1 {
+      left: 17.8vw;
+      top: 0.33vw;
+      width: 10.05vw;
+      height: 12.5vw;
+    }
+
+    .hero__aplat--2 {
+      left: 0;
+      top: 9.06vw;
+      width: 7.4vw;
+      height: 12.5vw;
+    }
+
+    .hero__aplat--3 {
+      left: 3.9vw;
+      bottom: 0;
+      width: 17.66vw;
+      height: 20.7vw;
+    }
+
+    .hero__aplat--4 {
+      left: 72.35vw;
+      top: 21.7vw;
+      width: 10.78vw;
+      height: 13.49vw;
+    }
+
+    .hero__aplat--5 {
+      right: 0;
+      top: 3.44vw;
+      width: 15.48vw;
+      height: 22.2vw;
     }
   }
 
-  /* À propos */
-  .apropos {
+  /* ---------- Ce que je peux faire pour vous ---------- */
+  .offres {
+    width: min(75rem, 100% - 2 * var(--marge));
+    margin-inline: auto;
+    padding-block: clamp(4rem, 2.5rem + 5vw, 8.1rem) clamp(4rem, 2.5rem + 5vw, 8.5rem);
+  }
+
+  .offres__tete {
     display: grid;
-    gap: var(--space-l);
+    justify-items: center;
+    gap: 0.5rem;
+    text-align: center;
   }
 
-  .apropos__accroche {
-    font-family: var(--font-titres);
-    font-size: var(--step-5);
-    font-weight: 250;
-    line-height: var(--leading-serre);
-    letter-spacing: -0.025em;
+  .offres__tete h2,
+  .projets h2 {
+    font-size: clamp(1.75rem, 1.1rem + 1.8vw, 2.375rem);
   }
 
-  .apropos__infos {
+  .offres__tete p {
+    max-inline-size: 37rem;
+    line-height: 1.4;
+  }
+
+  .offres__liste {
     display: grid;
-    max-inline-size: var(--mesure);
-    font-size: var(--step--1);
+    gap: 1.8rem;
+    margin-top: clamp(2rem, 1.5rem + 2vw, 3.1rem);
   }
 
-  .apropos__infos div {
-    display: grid;
-    grid-template-columns: 8.5rem 1fr;
-    gap: var(--space-s);
-    padding-block: 0.7em;
-    border-top: var(--filet);
+  .offre {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem;
+    border-radius: 2.25rem;
   }
 
-  .apropos__infos dt {
+  .offre--branding {
+    background: var(--c-branding);
+  }
+
+  .offre--webdesign {
+    background: var(--c-webdesign);
+  }
+
+  .offre--print {
+    background: var(--c-print);
+  }
+
+  .offre__titre {
+    margin-top: 1rem;
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+
+  .offre__texte {
+    margin-top: 0.75rem;
+    line-height: 1.31;
+  }
+
+  .offre__sous-titre {
+    margin-top: 1.6rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  .offre__sous-titre + .offre__texte {
+    margin-top: 0.4rem;
+  }
+
+  .offre__prix {
+    display: block;
+    margin-top: auto;
+    padding-top: 2rem;
+    font-size: 1.125rem;
     font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
-  .apropos__infos dd {
-    margin: 0;
+  .offre__prix strong {
+    font-weight: 700;
+  }
+
+  .offre__note {
+    display: block;
+    font-size: 0.875rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .offre__bouton {
+    min-width: min(15.6rem, 100%);
+    margin-top: 1.1rem;
+  }
+
+  @media (min-width: 64em) {
+    .offres__liste {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- Quelques projets ---------- */
+  .projets {
+    padding-block: clamp(4rem, 2.5rem + 5vw, 8.1rem) clamp(4rem, 2.5rem + 5vw, 9rem);
+    background: var(--c-bordeaux);
+    color: var(--c-lin);
+  }
+
+  .projets h2 {
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.4rem);
+    text-align: center;
+  }
+
+  .projets__tous {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.5rem, 2rem + 2vw, 3.1rem);
+  }
+
+  /* ---------- Un projet en tête ? ---------- */
+  .bande-contact {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    padding: clamp(4rem, 3rem + 3vw, 6.3rem) var(--marge) clamp(4rem, 3rem + 4vw, 7.6rem);
+    background: var(--c-corail);
+    text-align: center;
+  }
+
+  .bande-contact h2 {
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.125rem);
+  }
+
+  .bande-contact p {
+    max-inline-size: 47rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .bande-contact .bouton {
+    min-width: 13.8rem;
+    margin-top: 1.25rem;
   }
 </style>

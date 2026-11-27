@@ -8,9 +8,23 @@ annee:
 role: "Création de la marque, de la réflexion stratégique aux supports imprimés et numériques"
 familles: [branding, webdesign, print]
 disciplines: ["Direction artistique", "Webdesign", "Graphisme"]
-ordre: 2
+ordre: 1
 accueil: true
 conclusion: "Ce projet m’a permis d’accompagner la création de la marque de A à Z, de la réflexion stratégique jusqu’à la conception des supports imprimés et numériques."
+
+# Carte sur l’accueil
+accroche: "Marque d’accessoires d’hygiène made in France"
+extrait: "Une marque toute neuve, pensée pour se démarquer en rayon. J’ai créé son identité de A à Z, puis je l’ai déclinée sur les packagings, les supports de vente et le site."
+etiquettes: ["Branding", "Webdesign", "Packaging"]
+
+# Avis du client (section « Ces entreprises m’ont fait confiance »)
+logo: "./logo.svg"
+avis:
+  # À remplacer par le vrai avis du client (texte provisoire de la maquette)
+  citation: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  nom: "Thomas Jean"
+  role: "Co-fondateur"
+  ordre: 4
 
 # Couverture : déposez l’image dans ce dossier, puis retirez les # des trois lignes ci-dessous.
 # couverture:
