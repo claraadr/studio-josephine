@@ -15,9 +15,10 @@ credits:
   - "Projet mené en équipe de cinq profils : développement, marketing, data et design"
 conclusion: "Des premiers wireframes aux maquettes finales, jusqu’aux tests utilisateurs, ce projet m’a permis d’explorer l’ensemble du processus de création d’un produit numérique, de l’identification d’un besoin jusqu’à la validation d’une solution."
 
-# Couverture : déposez l’image dans ce dossier, puis retirez les # des trois lignes ci-dessous.
+# Couverture : à ajouter dans Pages CMS (champ « Couverture »), ou à la main : déposez l’image dans
+# src/assets/projets/basile/, puis retirez les # des trois lignes ci-dessous.
 # couverture:
-#   image: "./couverture.jpg"
+#   image: "../../../assets/projets/basile/couverture.jpg"
 #   alt: "Ce que montre l’image, en une phrase"
 ---
 

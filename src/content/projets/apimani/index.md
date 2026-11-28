@@ -21,7 +21,7 @@ extrait: "Une marque en pleine croissance, avec une nouvelle identité signée p
 etiquettes: ["UX/UI", "Webdesign", "Print"]
 
 # Avis du client (section « Ces entreprises m’ont fait confiance »)
-logo: "./logo.svg"
+logo: "../../../assets/projets/apimani/logo.svg"
 avis:
   # À remplacer par le vrai avis du client (texte provisoire de la maquette)
   citation: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -29,9 +29,10 @@ avis:
   role: "Co-fondateur"
   ordre: 2
 
-# Couverture : déposez l’image dans ce dossier, puis retirez les # des trois lignes ci-dessous.
+# Couverture : à ajouter dans Pages CMS (champ « Couverture »), ou à la main : déposez l’image dans
+# src/assets/projets/apimani/, puis retirez les # des trois lignes ci-dessous.
 # couverture:
-#   image: "./couverture.jpg"
+#   image: "../../../assets/projets/apimani/couverture.jpg"
 #   alt: "Ce que montre l’image, en une phrase"
 ---
 

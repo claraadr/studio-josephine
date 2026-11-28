@@ -4,6 +4,17 @@ import Fleche from '../../components/Fleche.astro';
 import { projetsTries, type Famille } from '../../lib/projets';
 import { url } from '../../lib/url';
 import { typo } from '../../lib/typographie.mjs';
+import accueil from '../../data/accueil.json';
+
+// Les prix sont ceux de l'accueil (src/data/accueil.json) : une seule source, modifiable dans Pages CMS
+function prixDe(famille: string) {
+  const o = accueil.offres.liste.find((x) => x.famille === famille);
+  return {
+    avant: o?.prixAvant || undefined,
+    montant: (o?.prix ?? '').replace(/\*$/, ''),
+    note: (o?.prixNote ?? '').replace(/^\*/, '') || undefined,
+  };
+}
 
 const projets = await projetsTries();
 const projetsDe = (famille: Famille) => projets.filter((p) => p.data.familles.includes(famille));
@@ -28,7 +39,7 @@ const poles: Pole[] = [
       'Mon logo date du lancement et ne me ressemble plus.',
     ],
     promesse: 'Une marque qui inspire confiance, en création ou en refonte.',
-    prix: { avant: 'À partir de', montant: '890 €' },
+    prix: prixDe('branding'),
     travail: [
       'Brief',
       'Atelier de marque',
@@ -46,7 +57,7 @@ const poles: Pole[] = [
     nom: 'Webdesign',
     paroles: ['Mon activité a évolué, mais mon site date du lancement et ne m’apporte pas de clients.'],
     promesse: 'Un site à la hauteur de votre activité, qui transforme les visiteurs en clients.',
-    prix: { avant: 'À partir de', montant: '990 €', note: 'hors intégration' },
+    prix: prixDe('webdesign'),
     travail: [
       'Audit de l’existant',
       'Atelier sur les objectifs et les clients',
@@ -63,7 +74,7 @@ const poles: Pole[] = [
     nom: 'Print',
     paroles: ['Un support ponctuel, ou une identité à décliner.'],
     paroleEstUnBesoin: true,
-    prix: { montant: 'Sur devis' },
+    prix: prixDe('print'),
     travail: [
       'Flyer',
       'Affiche',
@@ -131,9 +142,9 @@ const etapes = [
           )}
           <p class="pole__prix">
             <span class="pole__qui">Tarif</span>
-            {pole.prix.avant && <>{pole.prix.avant} </>}
-            <strong>{pole.prix.montant.replace(/(\d) €/, '$1\u00a0€')}</strong>
-            {pole.prix.note && <> ({pole.prix.note})</>}
+            {pole.prix.avant && <>{typo(pole.prix.avant)} </>}
+            <strong>{typo(pole.prix.montant)}</strong>
+            {pole.prix.note && <> ({typo(pole.prix.note)})</>}
           </p>
           <div class="pole__travail">
             <h3 class="pole__qui">Le travail comprend</h3>

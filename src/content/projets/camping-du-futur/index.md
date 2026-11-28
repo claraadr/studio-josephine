@@ -18,7 +18,7 @@ extrait: "Un camping familial en pleine transformation, qui voulait une image à
 etiquettes: ["Branding"]
 
 # Avis du client (section « Ces entreprises m’ont fait confiance »)
-logo: "./logo.png"
+logo: "../../../assets/projets/camping-du-futur/logo.png"
 avis:
   # À remplacer par le vrai avis du client (texte provisoire de la maquette)
   citation: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -26,9 +26,10 @@ avis:
   role: "Directeur du camping"
   ordre: 3
 
-# Couverture : déposez l’image dans ce dossier, puis retirez les # des trois lignes ci-dessous.
+# Couverture : à ajouter dans Pages CMS (champ « Couverture »), ou à la main : déposez l’image dans
+# src/assets/projets/camping-du-futur/, puis retirez les # des trois lignes ci-dessous.
 # couverture:
-#   image: "./couverture.jpg"
+#   image: "../../../assets/projets/camping-du-futur/couverture.jpg"
 #   alt: "Ce que montre l’image, en une phrase"
 ---
 

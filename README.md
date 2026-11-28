@@ -38,15 +38,42 @@ L'accueil reprend la maquette de Clara (Figma), avec ses textes passés au vouvo
   (`src/components/CarrouselAvis.astro`) ;
 - la bande corail d'appel au contact.
 
-## Mettre à jour le site sans coder
+## Modifier le site avec Pages CMS
 
-Tout se fait sur GitHub : ouvrir le fichier, cliquer sur le crayon, modifier, puis **Commit changes**.
-Chaque modification fusionnée dans `main` est republiée automatiquement en deux à trois minutes.
+[Pages CMS](https://pagescms.org) est une interface gratuite pour modifier le site sans toucher au code :
+des formulaires à la place des fichiers. Elle enregistre directement dans ce dépôt GitHub, et chaque
+enregistrement republie le site en deux à trois minutes.
 
-### Coordonnées et mentions légales
+### Première connexion (une seule fois)
 
-Dans [`src/config.ts`](src/config.ts) (l'email et la ville viennent de la maquette), remplacer chaque `null` par la valeur entre apostrophes,
-par exemple `email: 'bonjour@exemple.fr',`. Tant qu'une valeur vaut `null`, le site affiche « [À COMPLÉTER : …] ».
+1. Aller sur **https://app.pagescms.org** et cliquer sur **Sign in with GitHub**, avec le compte `claraadr`.
+2. Cliquer sur **Install the GitHub App**, choisir le compte `claraadr`, puis **Only select repositories** →
+   `studio-josephine` → **Install**.
+3. De retour dans Pages CMS, ouvrir `claraadr/studio-josephine`, branche `main`.
+
+Pour donner accès à quelqu'un d'autre (par exemple Lucas) : **Settings → Collaborators** dans Pages CMS,
+avec son adresse email ; il n'a pas besoin de compte GitHub.
+
+### Ce qu'on y trouve
+
+| Menu | Ce qu'il modifie | Fichier |
+| --- | --- | --- |
+| **Projets** | Les fiches projets : textes, cartes de l'accueil, avis des clients, logos et images | `src/content/projets/*/index.md` |
+| **Page d'accueil** | Tous les textes de l'accueil, les trois offres et leurs prix (repris sur la page Services) | `src/data/accueil.json` |
+| **Coordonnées et mentions légales** | Email, LinkedIn, ville, statut, SIRET, adresse, durée de conservation, service de formulaires | `src/data/studio.json` |
+| **Images des projets** | La médiathèque : déposer les images et les logos (un dossier par projet, conseillé) | `src/assets/projets/` |
+
+- Un champ laissé vide affiche « [À COMPLÉTER : …] » en rose sur le site.
+- Dans le texte d'une étude de cas, garder les quatre titres « Contexte », « Objectif », « Processus », « Résultat ».
+- **Save** enregistre et republie. Si une image n'a pas de texte alternatif, ou s'il manque un champ obligatoire,
+  la mise en ligne s'arrête (onglet **Actions** sur GitHub, message en français) et le site en ligne ne change pas.
+- La configuration de Pages CMS est dans [`.pages.yml`](.pages.yml). Tout nouveau champ ajouté à la fiche d'un projet
+  (`src/content.config.ts`) doit y être déclaré, sinon Pages CMS l'efface en enregistrant.
+
+### Sans Pages CMS
+
+Tout reste modifiable sur GitHub : ouvrir le fichier, cliquer sur le crayon, modifier, puis **Commit changes**.
+Chaque modification fusionnée dans `main` est republiée automatiquement.
 
 ### Formulaire de contact
 
@@ -57,8 +84,8 @@ Pour recevoir les demandes par un service de formulaires (Formspree, Basin, Getf
 2. Sur GitHub : **Settings → Secrets and variables → Actions → Variables → New repository variable**,
    nom `FORMULAIRE_URL`, valeur : l'adresse copiée.
 3. Chez le service, régler la page affichée après l'envoi sur `…/contact/merci/`.
-4. Dans `src/config.ts`, indiquer le nom du service (`service`, cité dans la page Confidentialité) et, si besoin,
-   le nom de son champ anti-spam (`champPiege`).
+4. Dans Pages CMS (**Coordonnées et mentions légales**), indiquer le nom du service, cité dans la page
+   Confidentialité. Si besoin, adapter le nom de son champ anti-spam (`champPiege`) dans `src/config.ts`.
 5. Onglet **Actions → Mettre en ligne sur GitHub Pages → Run workflow** pour republier.
 
 ### Ouvrir le site aux moteurs de recherche
@@ -68,6 +95,12 @@ Les pages portent `noindex` tant que des informations manquent. Le jour du lance
 
 ## Ajouter un projet (en cinq étapes)
 
+Avec Pages CMS : **Images des projets** → **Create folder** `nom-du-projet` et y déposer les images, puis
+**Projets → Add an entry**, remplir la fiche, choisir les images dans la médiathèque et enregistrer.
+Le titre donne le nom du dossier, donc l'adresse de la page.
+
+Directement sur GitHub :
+
 1. **Préparer** la couverture et 6 à 12 images (JPG ou PNG en sRGB, 2400 px de large au minimum),
    et les textes du projet en quatre parties : Contexte, Objectif, Processus, Résultat.
 2. **Créer le fichier** : sur GitHub, ouvrir `src/content/projets/`, puis **Add file → Create new file**
@@ -76,7 +109,7 @@ Les pages portent `noindex` tant que des informations manquent. Le jour du lance
 3. **Remplir** : copier le contenu d'un projet existant (par exemple `atelier-berlot/index.md`), puis remplacer
    la fiche en haut et les textes. Garder les quatre titres `## Contexte`, `## Objectif`, `## Processus`,
    `## Résultat`, dans cet ordre.
-4. **Ajouter les images** : ouvrir le dossier du projet, **Add file → Upload files**, déposer les images,
+4. **Ajouter les images** : dans `src/assets/projets/nom-du-projet/`, **Add file → Upload files**, déposer les images,
    puis les déclarer en haut de `index.md` (voir « Déclarer les images »), chacune avec son texte alternatif.
 5. **Publier** : **Commit changes** sur une nouvelle branche, ouvrir la pull request, vérifier, puis **Merge**.
    Le site se met à jour en quelques minutes. S'il manque un champ ou un texte alternatif, l'onglet **Actions**
@@ -95,7 +128,7 @@ Les pages portent `noindex` tant que des informations manquent. Le jour du lance
 | `credits`, `mention` | Les crédits (toujours visibles) et une mention éventuelle (ex. projet de fin d'études) |
 | `conclusion` | La phrase qui ferme la page (« Ce projet m'a permis… ») |
 | `accroche`, `extrait`, `etiquettes` | La carte du projet sur l'accueil : ligne d'accroche, court texte, étiquettes (Branding, Webdesign, UX/UI, Print, Packaging…) colorées selon leur famille |
-| `logo`, `avis` | Le logo du client (SVG ou PNG dans le dossier du projet) et son avis (`citation`, `nom`, `role`, `ordre`) pour la section « Ces entreprises m'ont fait confiance » |
+| `logo`, `avis` | Le logo du client (SVG ou PNG dans `src/assets/projets/nom-du-projet/`) et son avis (`citation`, `nom`, `role`, `ordre`) pour la section « Ces entreprises m'ont fait confiance » ; l'avis s'affiche dès que la citation est remplie |
 
 Un texte encore inconnu s'écrit `[À COMPLÉTER : …]` : il apparaît en rose sur la page.
 
@@ -103,30 +136,34 @@ La typographie française (espaces insécables, apostrophes courbes) est appliqu
 
 ### Déclarer les images
 
+Les images sont rangées dans `src/assets/projets/nom-du-projet/` ; depuis la fiche, leur chemin commence par
+`../../../assets/projets/nom-du-projet/` (Pages CMS l'écrit tout seul). Une image placée à côté de `index.md`
+fonctionne aussi, avec `./nom.jpg`, mais Pages CMS ne la voit pas.
+
 ```yaml
 couverture:
-  image: "./couverture.jpg"
+  image: "../../../assets/projets/nom-du-projet/couverture.jpg"
   alt: "Ce que montre l'image, en une phrase"
 images:
   ouverture: # facultatif : sinon, la couverture sert de visuel d'ouverture
-    image: "./ouverture.jpg"
+    image: "../../../assets/projets/nom-du-projet/ouverture.jpg"
     alt: "…"
   processus:
     - format: pleine # pleine, paire, triptyque ou detail
       images:
-        - image: "./recherches.jpg"
+        - image: "../../../assets/projets/nom-du-projet/recherches.jpg"
           alt: "…"
           legende: "Recherches" # facultatif
     - format: paire
       images:
-        - image: "./wireframe-1.jpg"
+        - image: "../../../assets/projets/nom-du-projet/wireframe-1.jpg"
           alt: "…"
-        - image: "./wireframe-2.jpg"
+        - image: "../../../assets/projets/nom-du-projet/wireframe-2.jpg"
           alt: "…"
   resultat:
     - format: pleine
       images:
-        - image: "./resultat.jpg"
+        - image: "../../../assets/projets/nom-du-projet/resultat.jpg"
           alt: "…"
 ```
 
@@ -173,8 +210,12 @@ permet d'indiquer un Chromium déjà installé.
 ### Organisation
 
 ```
-src/config.ts              coordonnées du studio, formulaire, indexation
-src/content/projets/       un dossier par projet : index.md et ses images
+.pages.yml                 configuration de Pages CMS
+src/data/accueil.json      textes et prix de l'accueil (prix repris sur la page Services)
+src/data/studio.json       coordonnées du studio et mentions légales
+src/config.ts              lit studio.json ; formulaire, indexation
+src/content/projets/       un dossier par projet : son index.md
+src/assets/projets/        images et logos des projets, un dossier par projet
 src/content.config.ts      la fiche d'un projet (champs et règles)
 src/styles/tokens.css      couleurs, polices, échelle typographique, espacements (seul fichier pour le style)
 src/styles/global.css      base et éléments signature (cartouches, bandeau, textures, boutons, champs)
@@ -182,7 +223,7 @@ src/styles/site.css        mise en page commune (en-têtes de page, sections, vi
 src/components/            en-tête, pied de page, logo, cartouches, bandeau, estampilles, visuels, galeries
 src/layouts/Base.astro     squelette commun : référencement, en-tête, pied de page
 src/lib/                   url() pour le sous-dossier, typographie française, outils des projets
-public/fonts/              Readex Pro et Poppins en WOFF2, avec leurs licences OFL
+public/fonts/              Readex Pro et DM Sans en WOFF2, avec leurs licences OFL
 ressources-clara/          fichiers fournis par Clara (logo, typos, visuels sources)
 ```
 

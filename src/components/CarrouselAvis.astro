@@ -11,8 +11,13 @@ import { projetsTries } from '../lib/projets';
 import { url } from '../lib/url';
 import { typo } from '../lib/typographie.mjs';
 
+interface Props {
+  titre?: string;
+}
+const { titre = 'Ces entreprises m’ont fait confiance' } = Astro.props;
+
 const projets = (await projetsTries())
-  .filter((p) => p.data.avis)
+  .filter((p) => p.data.avis?.citation?.trim())
   .sort((a, b) => (a.data.avis?.ordre ?? 0) - (b.data.avis?.ordre ?? 0));
 
 const texture = await getImage({ src: vichy, format: 'webp', width: 736, quality: 70 });
@@ -21,10 +26,10 @@ const texture = await getImage({ src: vichy, format: 'webp', width: 736, quality
 {
   projets.length > 0 && (
     <section class="avis" aria-labelledby="avis-titre" style={`--vichy: url('${texture.src}')`}>
-      <h2 id="avis-titre">Ces entreprises m’ont fait confiance</h2>
+      <h2 id="avis-titre">{typo(titre)}</h2>
       <div class="avis__piste" id="avis-piste" role="region" aria-label="Avis des clients" tabindex="0">
         {projets.map((p) => (
-          <article class="avis__carte" aria-label={`Avis de ${p.data.avis?.nom}, ${p.data.titre}`}>
+          <article class="avis__carte" aria-label={p.data.avis?.nom ? `Avis de ${p.data.avis.nom}, ${p.data.titre}` : `Avis, ${p.data.titre}`}>
             {p.data.logo && (
               <Image src={p.data.logo} alt={p.data.titre} height={42} densities={[1, 2]} class="avis__logo" />
             )}

@@ -14,7 +14,9 @@ export function typo(texte) {
     .replace(/'/g, '’')
     .replace(/[   ]+([;:!?»])/g, `${INSECABLE}$1`)
     .replace(/«[   ]*/g, `«${INSECABLE}`)
-    .replace(/([^\s ])»/g, `$1${INSECABLE}»`);
+    .replace(/([^\s ])»/g, `$1${INSECABLE}»`)
+    // Nombre et unité ne se séparent pas : 48 h, 890 €, 20 %
+    .replace(/(\d) (?=(€|%|h\b|min\b|km\b|px\b))/g, `$1${INSECABLE}`);
 }
 
 const BALISES_IGNOREES = /^<(code|pre|script|style|kbd|samp)\b/i;
