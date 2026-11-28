@@ -24,7 +24,7 @@ const inclinaisons = [-1.1, 1, -0.45, 1.8];
   {
     projets.map((projet, i) => {
       const d = projet.data;
-      const etiquettes = d.etiquettes?.length ? d.etiquettes : d.familles.map(nomFamille);
+      const etiquettes = d.etiquettes?.filter((e) => e.trim()).length ? d.etiquettes.filter((e) => e.trim()) : d.familles.map(nomFamille);
       return (
         <article
           class="pile__carte fond-clair"
@@ -43,7 +43,7 @@ const inclinaisons = [-1.1, 1, -0.45, 1.8];
               {typo(d.titre)}
             </h3>
             {d.accroche && <p class="pile__accroche">{typo(d.accroche)}</p>}
-            <p class="pile__extrait">{typo(d.extrait ?? d.sousTitre)}</p>
+            <p class="pile__extrait">{typo(d.extrait || d.sousTitre)}</p>
             <a class="bouton pile__lien" href={url(`/projets/${projet.id}/`)}>
               Découvrir le projet<span class="visually-hidden"> {typo(d.titre)}</span>
             </a>

@@ -1,0 +1,67 @@
+{
+  "metier": "Graphiste & webdesigner freelance à Angers",
+  "titre": "Je conçois des expériences graphiques où esthétique, simplicité et fonctionnalité se rencontrent.",
+  "boutonRealisations": "Mes réalisations",
+  "boutonContact": "On en parle ?",
+  "motsCles": [
+    "identité de marque",
+    "direction artistique",
+    "webdesign",
+    "UX/UI",
+    "print",
+    "packaging",
+    "charte graphique",
+    "univers visuel"
+  ],
+  "offres": {
+    "titre": "Ce que je peux faire pour vous",
+    "introduction": "Que vous partiez de zéro ou que votre activité ait besoin d’un nouveau souffle, il y a une formule pour vous.",
+    "liste": [
+      {
+        "famille": "branding",
+        "etiquette": "Branding",
+        "titre": "Vous lancez votre projet, ou vous voulez lui donner un nouveau souffle ?",
+        "texte": "C’est votre identité qui fait qu’on vous reconnaît, qu’on vous fait confiance et qu’on se souvient de vous. Ensemble, on construit une image qui vous ressemble et qui donne envie de vous choisir.",
+        "obtenez": "Une identité cohérente et facile à reconnaître, prête à être utilisée partout, de votre carte de visite à votre compte Instagram.",
+        "prixAvant": "À partir de",
+        "prix": "890 €",
+        "prixNote": "",
+        "bouton": "Créer mon identité"
+      },
+      {
+        "famille": "webdesign",
+        "etiquette": "Webdesign",
+        "titre": "Votre site ne dit pas tout ce que vous valez ?",
+        "texte": "Un visiteur décide en quelques secondes s’il reste ou s’il part. D’un coup d’œil, il doit comprendre qui vous êtes, ce que vous proposez et comment vous joindre, sur ordinateur comme sur mobile.",
+        "obtenez": "Un site clair et agréable à parcourir, où vos visiteurs trouvent ce qu’ils cherchent et passent à l’action : réserver, acheter ou vous contacter.",
+        "prixAvant": "À partir de",
+        "prix": "990 €*",
+        "prixNote": "*hors intégration",
+        "bouton": "Imaginer mon site"
+      },
+      {
+        "famille": "print",
+        "etiquette": "Print",
+        "titre": "Un lancement produit, un événement à annoncer ?",
+        "texte": "Plaquette, flyer, étiquette ou packaging : des supports qui attirent l’œil en rayon comme sur un stand, et qui sortent de chez l’imprimeur exactement comme prévu.",
+        "obtenez": "Des supports soignés jusque dans les détails, fidèles à votre identité et prêts à partir chez l’imprimeur.",
+        "prixAvant": "",
+        "prix": "Sur devis",
+        "prixNote": "",
+        "bouton": "Parler de mon projet"
+      }
+    ]
+  },
+  "projets": {
+    "titre": "Quelques projets",
+    "bouton": "Découvrir toutes mes réalisations"
+  },
+  "avis": {
+    "titre": "Ces entreprises m’ont fait confiance"
+  },
+  "contact": {
+    "titre": "Un projet en tête ? On en parle.",
+    "texte": "Racontez-moi votre activité et vos envies. Je vous réponds sous 48 h, et ce premier échange est sans engagement.",
+    "bouton": "On en parle ?"
+  }
+}

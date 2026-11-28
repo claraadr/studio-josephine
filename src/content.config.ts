@@ -15,10 +15,14 @@ const projets = defineCollection({
     generateId: ({ entry }) => entry.split('/')[0],
   }),
   schema: ({ image }) => {
+    // Pages CMS retire les champs vides ; un champ laissé vide à la main ("") compte aussi comme absent.
+    const vide = (v: unknown) => (v === '' ? null : v);
+    const img = () => z.preprocess(vide, image().nullish());
+
     // Une image et son texte alternatif. Sans image, le site affiche un aplat neutre légendé.
     const visuel = z
       .object({
-        image: image().nullish(),
+        image: img(),
         alt: z.string().nullish(),
         legende: z.string().nullish(),
       })
@@ -38,7 +42,7 @@ const projets = defineCollection({
       resume: z.string(), // résumé d'une ligne
       client: z.string(),
       secteur: z.string(),
-      annee: z.number().int().nullish(), // affichée seulement si elle est connue
+      annee: z.preprocess(vide, z.number().int().nullish()), // affichée seulement si elle est connue
       role: z.string(), // rôle de Clara
       familles: z.array(z.enum(['branding', 'webdesign', 'print'])).min(1),
       disciplines: z.array(z.string()).default([]),
@@ -55,13 +59,13 @@ const projets = defineCollection({
       etiquettes: z.array(z.string()).nullish(), // ex. Branding, Webdesign, Packaging, UX/UI, Print
 
       // Avis du client, affiché dans « Ces entreprises m'ont fait confiance »
-      logo: image().nullish(), // logo du client (SVG ou PNG), placé dans le dossier du projet
+      logo: img(), // logo du client (SVG ou PNG), dans src/assets/projets/
       avis: z
         .object({
-          citation: z.string(),
-          nom: z.string(),
-          role: z.string(),
-          ordre: z.number(),
+          citation: z.string().nullish(), // l'avis s'affiche dès que la citation est remplie
+          nom: z.string().nullish(),
+          role: z.string().nullish(),
+          ordre: z.number().nullish(),
         })
         .nullish(),
       images: z

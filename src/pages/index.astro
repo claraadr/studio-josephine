@@ -11,61 +11,14 @@ import { projetsTries } from '../lib/projets';
 import { url } from '../lib/url';
 import { typo } from '../lib/typographie.mjs';
 import { studio } from '../config';
+import accueil from '../data/accueil.json';
 
 const projets = (await projetsTries()).filter((p) => p.data.accueil);
 
-const motsCles = [
-  'identité de marque',
-  'direction artistique',
-  'webdesign',
-  'UX/UI',
-  'print',
-  'packaging',
-  'charte graphique',
-  'univers visuel',
-];
-
-const offres = [
-  {
-    famille: 'branding',
-    etiquette: 'Branding',
-    titre: 'Vous lancez votre projet, ou vous voulez lui donner un nouveau souffle ?',
-    texte:
-      'C’est votre identité qui fait qu’on vous reconnaît, qu’on vous fait confiance et qu’on se souvient de vous. Ensemble, on construit une image qui vous ressemble et qui donne envie de vous choisir.',
-    obtenez:
-      'Une identité cohérente et facile à reconnaître, prête à être utilisée partout, de votre carte de visite à votre compte Instagram.',
-    prix: { avant: 'À partir de', montant: '890 €' },
-    bouton: 'Créer mon identité',
-    objet: 'identite',
-  },
-  {
-    famille: 'webdesign',
-    etiquette: 'Webdesign',
-    titre: 'Votre site ne dit pas tout ce que vous valez ?',
-    texte:
-      'Un visiteur décide en quelques secondes s’il reste ou s’il part. D’un coup d’œil, il doit comprendre qui vous êtes, ce que vous proposez et comment vous joindre, sur ordinateur comme sur mobile.',
-    obtenez:
-      'Un site clair et agréable à parcourir, où vos visiteurs trouvent ce qu’ils cherchent et passent à l’action : réserver, acheter ou vous contacter.',
-    prix: { avant: 'À partir de', montant: '990 €*', note: '*hors intégration' },
-    bouton: 'Imaginer mon site',
-    objet: 'site',
-  },
-  {
-    famille: 'print',
-    etiquette: 'Print',
-    titre: 'Un lancement produit, un événement à annoncer ?',
-    texte:
-      'Plaquette, flyer, étiquette ou packaging : des supports qui attirent l’œil en rayon comme sur un stand, et qui sortent de chez l’imprimeur exactement comme prévu.',
-    obtenez:
-      'Des supports soignés jusque dans les détails, fidèles à votre identité et prêts à partir chez l’imprimeur.',
-    prix: { montant: 'Sur devis' },
-    bouton: 'Parler de mon projet',
-    objet: 'imprime',
-  },
-];
-
-// Espace insécable entre un nombre et « € »
-const prix = (s: string) => typo(s.replace(/(\d) €/g, '$1 €'));
+// Textes de l'accueil : src/data/accueil.json (modifiable dans Pages CMS, « Page d'accueil »)
+const motsCles = accueil.motsCles;
+const objetContact: Record<string, string> = { branding: 'identite', webdesign: 'site', print: 'imprime' };
+const offres = accueil.offres.liste.map((o) => ({ ...o, objet: objetContact[o.famille] ?? '' }));
 
 const adresse = new URL(url('/'), Astro.site).href;
 const donnees = {
@@ -112,13 +65,11 @@ const donnees = {
       <span class="hero__aplat hero__aplat--5"></span>
     </div>
     <div class="hero__contenu">
-      <p class="hero__metier">Graphiste &amp; webdesigner freelance à Angers</p>
-      <h1 id="hero-titre">
-        Je conçois des expériences graphiques où esthétique, simplicité et fonctionnalité se rencontrent.
-      </h1>
+      <p class="hero__metier">{typo(accueil.metier)}</p>
+      <h1 id="hero-titre">{typo(accueil.titre)}</h1>
       <div class="hero__actions">
-        <a class="bouton bouton--anis" href={url('/projets/')}>Mes réalisations</a>
-        <a class="bouton bouton--contour" href={url('/contact/')}>On en parle&nbsp;?</a>
+        <a class="bouton bouton--anis" href={url('/projets/')}>{typo(accueil.boutonRealisations)}</a>
+        <a class="bouton bouton--contour" href={url('/contact/')}>{typo(accueil.boutonContact)}</a>
       </div>
     </div>
   </section>
@@ -128,9 +79,9 @@ const donnees = {
   <!-- Ce que je peux faire pour vous -->
   <section class="offres" aria-labelledby="offres-titre">
     <div class="offres__tete">
-      <h2 id="offres-titre">Ce que je peux faire pour vous</h2>
+      <h2 id="offres-titre">{typo(accueil.offres.titre)}</h2>
       <p>
-        Que vous partiez de zéro ou que votre activité ait besoin d’un nouveau souffle, il y a une formule pour vous.
+        {typo(accueil.offres.introduction)}
       </p>
     </div>
     <div class="offres__liste">
@@ -145,9 +96,9 @@ const donnees = {
             <h4 class="offre__sous-titre">Ce que vous obtenez</h4>
             <p class="offre__texte">{typo(o.obtenez)}</p>
             <p class="offre__prix">
-              {o.prix.avant && <>{o.prix.avant} </>}
-              <strong>{prix(o.prix.montant)}</strong>
-              {o.prix.note && <span class="offre__note">{o.prix.note}</span>}
+              {o.prixAvant && <>{typo(o.prixAvant)} </>}
+              <strong>{typo(o.prix)}</strong>
+              {o.prixNote && <span class="offre__note">{typo(o.prixNote)}</span>}
             </p>
             <a class="bouton offre__bouton" href={url(`/contact/?objet=${o.objet}`)}>
               {o.bouton}
@@ -160,24 +111,23 @@ const donnees = {
 
   <!-- Quelques projets : cartes empilées au défilement -->
   <section class="projets fond-fonce" aria-labelledby="projets-titre">
-    <h2 id="projets-titre">Quelques projets</h2>
+    <h2 id="projets-titre">{typo(accueil.projets.titre)}</h2>
     <PileProjets projets={projets} />
     <p class="projets__tous">
-      <a class="bouton bouton--anis" href={url('/projets/')}>Découvrir toutes mes réalisations</a>
+      <a class="bouton bouton--anis" href={url('/projets/')}>{typo(accueil.projets.bouton)}</a>
     </p>
   </section>
 
   <!-- Ces entreprises m'ont fait confiance -->
-  <CarrouselAvis />
+  <CarrouselAvis titre={accueil.avis.titre} />
 
   <!-- Appel au contact -->
   <section class="bande-contact" aria-labelledby="bande-contact-titre">
-    <h2 id="bande-contact-titre">Un projet en tête&nbsp;? On en parle.</h2>
+    <h2 id="bande-contact-titre">{typo(accueil.contact.titre)}</h2>
     <p>
-      Racontez-moi votre activité et vos envies. Je vous réponds sous 48&nbsp;h, et ce premier échange est sans
-      engagement.
+      {typo(accueil.contact.texte)}
     </p>
-    <a class="bouton bouton--anis" href={url('/contact/')}>On en parle&nbsp;?</a>
+    <a class="bouton bouton--anis" href={url('/contact/')}>{typo(accueil.contact.bouton)}</a>
   </section>
 </Base>
 

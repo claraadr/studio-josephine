@@ -5,8 +5,11 @@ Ce que le site attend encore. Sur les pages, chaque information manquante est si
 
 ## Textes et visuels de Clara
 
+- [ ] **Pages CMS** : première connexion et installation de l'application GitHub (README, « Modifier le site avec
+      Pages CMS »).
+
 - [ ] **Avis des clients** : les quatre avis de l'accueil affichent encore le faux texte de la maquette
-      (« Lorem ipsum… »), comme demandé. À remplacer dans chaque fiche projet (`avis: citation:`) :
+      (« Lorem ipsum… »), comme demandé. À remplacer dans chaque fiche projet (Pages CMS : Projets → Avis du client) :
       Emmanuelle Moulié (Atelier Berlot), Alexis Godicheau (Apimani), Medhy Lepoureau (Camping du Futur),
       Thomas Jean (Ehop!).
 - [ ] **Camping du Futur** : l'étude de cas est à écrire (Contexte, Objectif, Processus, Résultat, phrase de fin),
@@ -21,7 +24,7 @@ Ce que le site attend encore. Sur les pages, chaque information manquante est si
 - [ ] Année de chaque projet (facultatif : affichée dans la fiche si elle est connue).
 - [ ] Portrait (facultatif) pour la page À propos.
 
-## Informations à saisir dans `src/config.ts`
+## Informations à saisir (Pages CMS : Coordonnées et mentions légales)
 
 - [ ] Lien LinkedIn : pied de page, Contact, À propos.
 - [ ] Statut juridique, SIRET, adresse professionnelle : mentions légales.
@@ -31,8 +34,8 @@ Ce que le site attend encore. Sur les pages, chaque information manquante est si
 
 ## À décider (Lucas)
 
-- [ ] **Service de formulaires** : variable GitHub `FORMULAIRE_URL`, nom du service et champ anti-spam dans
-      `src/config.ts`, redirection vers `/contact/merci/` (README, « Formulaire de contact »).
+- [ ] **Service de formulaires** : variable GitHub `FORMULAIRE_URL`, nom du service dans Pages CMS, champ anti-spam
+      dans `src/config.ts`, redirection vers `/contact/merci/` (README, « Formulaire de contact »).
 - [ ] **Nom de domaine** : Settings → Pages → Custom domain, puis DNS chez le registraire.
 - [ ] **Ouverture aux moteurs de recherche** : variable GitHub `INDEXATION` = `true`, une fois le reste complété.
 

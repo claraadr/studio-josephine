@@ -1,0 +1,437 @@
+# Configuration de Pages CMS (https://pagescms.org) : l'interface pour modifier le site sans coder.
+# Mode d'emploi : README.md, « Modifier le site avec Pages CMS ».
+# Chaque enregistrement dans Pages CMS crée un commit sur main, et le site se republie tout seul.
+#
+# Attention : un champ absent de ce fichier est effacé quand Pages CMS enregistre la fiche.
+# Tout nouveau champ ajouté dans src/content.config.ts doit aussi être déclaré ici.
+
+media:
+  - name: images
+    label: "Images des projets"
+    input: src/assets/projets
+    # Chemin écrit dans la fiche, vu depuis src/content/projets/nom-du-projet/index.md
+    output: ../../../assets/projets
+    categories: [image]
+
+content:
+  # ---------- Projets ----------
+  - name: projets
+    label: "Projets"
+    description: "Une fiche par projet. Le nom du dossier devient l'adresse de la page (/projets/nom-du-projet/)."
+    type: collection
+    path: src/content/projets
+    filename: "{primary}/index.md"
+    format: yaml-frontmatter
+    view:
+      layout: tree
+      node:
+        filename: index.md
+        hideDirs: nodes
+      primary: titre
+      fields: [titre, familles, ordre, accueil]
+      sort: [ordre, titre]
+      default:
+        sort: ordre
+        order: asc
+    fields:
+      - name: titre
+        label: "Titre du projet"
+        type: string
+        required: true
+      - name: sousTitre
+        label: "Sous-titre"
+        description: "La ligne d'accroche sous le titre de l'étude de cas."
+        type: string
+        required: true
+      - name: resume
+        label: "Résumé"
+        description: "Une ligne, reprise dans la description de la page pour les moteurs de recherche."
+        type: string
+        required: true
+      - name: client
+        label: "Client"
+        type: string
+        required: true
+      - name: secteur
+        label: "Secteur"
+        type: string
+        required: true
+      - name: annee
+        label: "Année"
+        description: "Facultatif. Affichée dans la fiche si elle est renseignée."
+        type: number
+        options:
+          min: 2000
+          max: 2100
+      - name: role
+        label: "Votre rôle"
+        type: string
+        required: true
+      - name: familles
+        label: "Familles"
+        description: "Pour le filtre des réalisations et les cartouches colorés."
+        type: select
+        required: true
+        options:
+          multiple: true
+          values:
+            - value: branding
+              label: "Branding"
+            - value: webdesign
+              label: "Webdesign"
+            - value: print
+              label: "Print"
+      - name: disciplines
+        label: "Autres disciplines"
+        description: "Étiquettes neutres (Direction artistique, Graphisme…)."
+        type: string
+        list: true
+      - name: ordre
+        label: "Ordre d'affichage"
+        description: "1 pour le premier projet, 2 pour le suivant, etc."
+        type: number
+        required: true
+      - name: accueil
+        label: "Mettre en avant sur l'accueil"
+        type: boolean
+        default: false
+      - name: mention
+        label: "Mention"
+        description: "Facultatif. Affichée en tête de page (par exemple « Projet de fin d'études »)."
+        type: string
+      - name: credits
+        label: "Crédits"
+        type: string
+        list: true
+      - name: conclusion
+        label: "Phrase de fin"
+        description: "La phrase qui ferme la page (« Ce projet m'a permis… »)."
+        type: text
+        required: true
+
+      # Carte du projet sur l'accueil
+      - name: accroche
+        label: "Accueil : ligne d'accroche"
+        type: string
+      - name: extrait
+        label: "Accueil : court texte"
+        description: "Sans texte, la carte reprend le sous-titre."
+        type: text
+      - name: etiquettes
+        label: "Accueil : étiquettes"
+        description: "Branding, Webdesign, UX/UI, Print, Packaging… colorées selon leur famille. Sans étiquette, la carte reprend les familles."
+        type: string
+        list: true
+
+      # Avis du client
+      - name: logo
+        label: "Logo du client"
+        description: "SVG ou PNG, pour la section « Ces entreprises m'ont fait confiance »."
+        type: image
+        options:
+          media: images
+          extensions: [svg, png, jpg, jpeg, webp]
+      - name: avis
+        label: "Avis du client"
+        description: "Affiché sur l'accueil dès que la citation est remplie."
+        type: object
+        fields:
+          - name: citation
+            label: "Citation"
+            type: text
+          - name: nom
+            label: "Nom"
+            type: string
+          - name: role
+            label: "Fonction"
+            type: string
+          - name: ordre
+            label: "Ordre dans le carrousel"
+            type: number
+
+      # Images
+      - name: couverture
+        label: "Couverture"
+        description: "Recadrée au centre selon son emplacement (3:2, 4:5, 16:9 ou 5:4) ; gardez le sujet au centre. Sans couverture, un aplat légendé s'affiche."
+        type: object
+        fields:
+          - name: image
+            label: "Image"
+            type: image
+            options:
+              media: images
+          - name: alt
+            label: "Texte alternatif"
+            description: "Obligatoire avec une image. Décrivez ce qu'elle montre, en une phrase."
+            type: string
+          - name: legende
+            label: "Légende"
+            type: string
+      - name: images
+        label: "Images de l'étude de cas"
+        description: "JPG ou PNG en sRGB, 2400 px de large au minimum. Chaque image doit avoir un texte alternatif."
+        type: object
+        fields:
+          - name: ouverture
+            label: "Visuel d'ouverture"
+            description: "Facultatif. Sinon, la couverture sert de visuel d'ouverture."
+            type: object
+            fields:
+              - name: image
+                label: "Image"
+                type: image
+                options:
+                  media: images
+              - name: alt
+                label: "Texte alternatif"
+                type: string
+              - name: legende
+                label: "Légende"
+                type: string
+          - name: processus
+            label: "Groupes d'images du processus"
+            type: object
+            list:
+              collapsible: true
+            fields: &groupe
+              - name: format
+                label: "Format"
+                description: "Pleine largeur ; paire (2 images en 4:5) ; triptyque (3 images en 3:4) ; détail."
+                type: select
+                required: true
+                default: pleine
+                options:
+                  values:
+                    - value: pleine
+                      label: "Pleine largeur"
+                    - value: paire
+                      label: "Paire"
+                    - value: triptyque
+                      label: "Triptyque"
+                    - value: detail
+                      label: "Détail"
+              - name: images
+                label: "Images"
+                type: object
+                list:
+                  min: 1
+                  collapsible: false
+                fields:
+                  - name: image
+                    label: "Image"
+                    type: image
+                    options:
+                      media: images
+                  - name: alt
+                    label: "Texte alternatif"
+                    type: string
+                  - name: legende
+                    label: "Légende"
+                    type: string
+          - name: resultat
+            label: "Groupes d'images du résultat"
+            type: object
+            list:
+              collapsible: true
+            fields: *groupe
+
+      - name: body
+        label: "Texte de l'étude de cas"
+        description: "Gardez les quatre titres « Contexte », « Objectif », « Processus », « Résultat », dans cet ordre."
+        type: rich-text
+        options:
+          format: markdown
+
+  # ---------- Page d'accueil ----------
+  - name: accueil
+    label: "Page d'accueil"
+    description: "Les textes et les prix de l'accueil. Les prix sont repris sur la page Services."
+    type: file
+    path: src/data/accueil.json
+    format: json
+    fields:
+      - name: metier
+        label: "Premier écran, petite ligne au-dessus du titre"
+        type: string
+        required: true
+      - name: titre
+        label: "Premier écran, grand titre"
+        type: text
+        required: true
+      - name: boutonRealisations
+        label: "Premier écran, bouton vers les réalisations"
+        type: string
+        required: true
+      - name: boutonContact
+        label: "Premier écran, bouton vers le contact"
+        type: string
+        required: true
+      - name: motsCles
+        label: "Bandeau défilant, mots"
+        type: string
+        list: true
+        required: true
+      - name: offres
+        label: "Offres"
+        type: object
+        required: true
+        fields:
+          - name: titre
+            label: "Titre de la section"
+            type: string
+            required: true
+          - name: introduction
+            label: "Introduction"
+            type: text
+          - name: liste
+            label: "Les trois offres"
+            description: "Une par famille, dans l'ordre d'affichage."
+            type: object
+            required: true
+            list:
+              min: 1
+              max: 3
+              collapsible: true
+            fields:
+              - name: famille
+                label: "Famille"
+                description: "Fixe la couleur de la carte et l'objet coché dans le formulaire de contact."
+                type: select
+                required: true
+                options:
+                  values:
+                    - value: branding
+                      label: "Branding"
+                    - value: webdesign
+                      label: "Webdesign"
+                    - value: print
+                      label: "Print"
+              - name: etiquette
+                label: "Étiquette"
+                type: string
+                required: true
+              - name: titre
+                label: "Titre"
+                type: string
+                required: true
+              - name: texte
+                label: "Texte"
+                type: text
+                required: true
+              - name: obtenez
+                label: "« Ce que vous obtenez »"
+                type: text
+                required: true
+              - name: prixAvant
+                label: "Avant le prix"
+                description: "Par exemple « À partir de ». Facultatif."
+                type: string
+              - name: prix
+                label: "Prix"
+                description: "Par exemple « 890 € » ou « Sur devis ». Un * à la fin renvoie à la note."
+                type: string
+                required: true
+              - name: prixNote
+                label: "Note sous le prix"
+                description: "Par exemple « *hors intégration ». Facultatif."
+                type: string
+              - name: bouton
+                label: "Texte du bouton"
+                type: string
+                required: true
+      - name: projets
+        label: "Section « Quelques projets »"
+        description: "Les projets affichés sont ceux cochés « Mettre en avant sur l'accueil »."
+        type: object
+        required: true
+        fields:
+          - name: titre
+            label: "Titre"
+            type: string
+            required: true
+          - name: bouton
+            label: "Bouton vers toutes les réalisations"
+            type: string
+            required: true
+      - name: avis
+        label: "Section des avis"
+        description: "Les avis se remplissent dans chaque fiche projet."
+        type: object
+        required: true
+        fields:
+          - name: titre
+            label: "Titre"
+            type: string
+            required: true
+      - name: contact
+        label: "Bande d'appel au contact"
+        type: object
+        required: true
+        fields:
+          - name: titre
+            label: "Titre"
+            type: string
+            required: true
+          - name: texte
+            label: "Texte"
+            type: text
+            required: true
+          - name: bouton
+            label: "Bouton"
+            type: string
+            required: true
+
+  # ---------- Coordonnées ----------
+  - name: studio
+    label: "Coordonnées et mentions légales"
+    description: "Un champ vide affiche « [À COMPLÉTER : …] » en rose sur le site."
+    type: file
+    path: src/data/studio.json
+    format: json
+    fields:
+      - name: nom
+        label: "Nom du studio"
+        type: string
+        required: true
+      - name: personne
+        label: "Votre nom"
+        type: string
+        required: true
+      - name: metier
+        label: "Métier"
+        type: string
+        required: true
+      - name: email
+        label: "Email de contact"
+        type: string
+        pattern:
+          regex: "^$|^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+          message: Indiquez une adresse email valide.
+      - name: linkedin
+        label: "Lien LinkedIn"
+        description: "L'adresse complète, qui commence par https://"
+        type: string
+        pattern:
+          regex: "^$|^https://"
+          message: Le lien doit commencer par https://
+      - name: ville
+        label: "Ville"
+        type: string
+      - name: statut
+        label: "Statut juridique"
+        description: "Pour les mentions légales (par exemple « Entrepreneur individuel »)."
+        type: string
+      - name: siret
+        label: "SIRET"
+        type: string
+      - name: adresse
+        label: "Adresse professionnelle"
+        type: text
+      - name: dureeConservation
+        label: "Durée de conservation des demandes reçues"
+        description: "Pour la page Confidentialité (par exemple « trois ans après le dernier échange »)."
+        type: string
+      - name: serviceFormulaire
+        label: "Service de formulaires"
+        description: "Le nom du service qui reçoit les demandes (Formspree, Basin…), cité dans la page Confidentialité."
+        type: string
